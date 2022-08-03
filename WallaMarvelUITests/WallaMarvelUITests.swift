@@ -1,10 +1,3 @@
-//
-//  WallaMarvelUITests.swift
-//  WallaMarvelUITests
-//
-//  Created by Alberto Moral on 22/6/22.
-//
-
 import XCTest
 
 class WallaMarvelUITests: XCTestCase {

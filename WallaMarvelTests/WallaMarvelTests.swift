@@ -1,10 +1,3 @@
-//
-//  WallaMarvelTests.swift
-//  WallaMarvelTests
-//
-//  Created by Alberto Moral on 22/6/22.
-//
-
 import XCTest
 @testable import WallaMarvel
 
