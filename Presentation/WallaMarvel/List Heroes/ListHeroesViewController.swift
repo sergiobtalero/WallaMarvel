@@ -37,4 +37,3 @@ extension ListHeroesViewController: UITableViewDelegate {
         navigationController?.pushViewController(listHeroesViewController, animated: true)
     }
 }
-
