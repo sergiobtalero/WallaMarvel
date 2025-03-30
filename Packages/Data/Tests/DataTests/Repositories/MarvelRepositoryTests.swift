@@ -33,6 +33,10 @@ struct MarvelRepositoryTests {
         #expect(!heroes.characters.isEmpty)
     }
     
+    @Test func getHeroDetailsWithSuccess() async throws {
+//        let sut = makeSUT(data: <#T##Data?#>)
+    }
+    
     @Test func getErrorOnBadServerReponse() async throws {
         let sut = makeSUT(error: URLError(.badServerResponse))
         

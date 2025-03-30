@@ -9,4 +9,5 @@ import Foundation
 
 public protocol MarvelRepositoryProtocol {
     func getHeroes(page: Int) async throws -> CharacterDataContainer
+    func getDetailsOfHero(id: String) async throws
 }

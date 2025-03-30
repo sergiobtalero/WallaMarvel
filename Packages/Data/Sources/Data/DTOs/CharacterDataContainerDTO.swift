@@ -11,10 +11,12 @@ struct CharacterDataContainerDTO: Decodable {
     let count: Int
     let limit: Int
     let offset: Int
+    let total: Int
     let characters: [CharacterDataModelDTO]
     
     enum CodingKeys: String, CodingKey {
         case data
+        case total
         case count, limit, offset, characters = "results"
     }
     
@@ -25,7 +27,7 @@ struct CharacterDataContainerDTO: Decodable {
         self.count = try data.decode(Int.self, forKey: .count)
         self.limit = try data.decode(Int.self, forKey: .limit)
         self.offset = try data.decode(Int.self, forKey: .offset)
-        
+        self.total = try data.decode(Int.self, forKey: .total)
         self.characters = try data.decode([CharacterDataModelDTO].self, forKey: .characters)
     }
     
@@ -35,6 +37,7 @@ struct CharacterDataContainerDTO: Decodable {
             count: count,
             limit: limit,
             offset: offset,
+            total: total,
             characters: characters.map { $0.toDomainModel() }
         )
     }

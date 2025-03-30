@@ -10,12 +10,14 @@ import Domain
 struct CharacterDataModelDTO: Decodable {
     let id: Int
     let name: String
+    let description: String
     let thumbnail: ThumbnailDTO
     
     func toDomainModel() -> CharacterDataModel {
         return CharacterDataModel(
             id: id,
             name: name,
+            description: description,
             thumbnail: thumbnail.toDomainModel()
         )
     }

@@ -11,12 +11,14 @@ public struct CharacterDataContainer {
     public let count: Int
     public let limit: Int
     public let offset: Int
+    public let total: Int
     public let characters: [CharacterDataModel]
     
-    public init(count: Int, limit: Int, offset: Int, characters: [CharacterDataModel]) {
+    public init(count: Int, limit: Int, offset: Int, total: Int, characters: [CharacterDataModel]) {
         self.count = count
         self.limit = limit
         self.offset = offset
+        self.total = total
         self.characters = characters
     }
 }

@@ -26,11 +26,13 @@ private extension MarvelRepository {
     }
     
     enum Endpoint {
-        case heroes
+        case heroes(page: Int, limit: Int)
+        case heroDetail(id: String)
         
         var path: String {
             switch self {
             case .heroes: return "/characters"
+            case .heroDetail(let id): return "/characters/\(id)"
             }
         }
     }
@@ -39,26 +41,40 @@ private extension MarvelRepository {
 // MARK: - MarvelRepositoryProtocol
 extension MarvelRepository: MarvelRepositoryProtocol {
     public func getHeroes(page: Int) async throws -> CharacterDataContainer {
-        let url = try buildURL(for: .heroes, page: page)
+        let responseLimit = 20
+        let url = try buildURL(for: .heroes(page: page, limit: responseLimit))
         let entities: CharacterDataContainerDTO = try await networkManager.fetch(from: url)
         return entities.toDomainModel()
+    }
+    
+    public func getDetailsOfHero(id: String) async throws {
+        let url = try buildURL(for: .heroDetail(id: id))
+        let entities: CharacterDataContainerDTO = try await networkManager.fetch(from: url)
+//        return entities.toDomainModel()
     }
 }
 
 // MARK: - Private
 private extension MarvelRepository {
-    func buildURL(for endpoint: Endpoint, page: Int, limit: Int = 20) throws -> URL {
+    func buildURL(for endpoint: Endpoint) throws -> URL {
         let ts = String(Int(Date().timeIntervalSince1970))
         let privateKey = Constant.privateKey
         let publicKey = Constant.publicKey
         let hash = "\(ts)\(privateKey)\(publicKey)".md5
-        let safePage = max(1, page)
-        let offset = (safePage - 1) * limit
-        let parameters: [String: String] = ["apikey": publicKey,
+        
+        var parameters: [String: String] = ["apikey": publicKey,
                                             "ts": ts,
-                                            "hash": hash,
-                                            "limit": String(limit),
-                                            "offset": String(offset)]
+                                            "hash": hash]
+        switch endpoint {
+        case .heroes(let page, let limit):
+            let safePage = max(1, page)
+            let offset = (safePage - 1) * limit
+            parameters["limit"] = String(limit)
+            parameters["offset"] = String(offset)
+        default:
+            break
+        }
+        
         guard var urlComponent = URLComponents(string: "\(baseURL)\(endpoint.path)") else {
             throw URLError(.badURL)
         }

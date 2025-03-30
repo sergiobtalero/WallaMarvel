@@ -7,4 +7,10 @@ public enum ModuleFactory {
         let repository = MarvelRepository(baseURL: "https://gateway.marvel.com:443/v1/public", networkManager: networkManager)
         return GetHeroesUseCase(repository: repository)
     }
+    
+    public static func makeGetHeroDetailsUseCase() -> GetHeroDetailsUseCaseProtocol {
+        let networkManager = NetworkManager()
+        let repository = MarvelRepository(baseURL: "https://gateway.marvel.com:443/v1/public", networkManager: networkManager)
+        return GetHeroDetailsUseCase(repository: repository)
+    }
 }
