@@ -1,0 +1,78 @@
+{
+    "status": "Ok",
+    "data": {
+        "results": [
+            {
+                "thumbnail": {
+                    "path": "testPath",
+                    "extension": "jpg"
+                },
+                "comics": {
+                    "returned": 12,
+                    "collectionURI": "testCollectionURI",
+                    "items": [
+                        {
+                            "name": "Avengers: The Initiative (2007) #14",
+                            "resourceURI": "testResourceURI"
+                        }
+                    ],
+                    "available": 12
+                },
+                "series": {
+                    "returned": 3,
+                    "collectionURI": "testCollectionURI",
+                    "items": [
+                        {
+                            "name": "Avengers: The Initiative (2007 - 2010)",
+                            "resourceURI": "testResourceURI"
+                        }
+                    ],
+                    "available": 3
+                },
+                "id": 1011334,
+                "stories": {
+                    "returned": 20,
+                    "collectionURI": "testCollectionURI",
+                    "items": [
+                        {
+                            "name": "Cover #19947",
+                            "resourceURI": "testResourceURI",
+                            "type": "cover"
+                        }
+                    ],
+                    "available": 21
+                },
+                "events": {
+                    "returned": 1,
+                    "collectionURI": "testCollectionURI",
+                    "items": [
+                        {
+                            "name": "Secret Invasion",
+                            "resourceURI": "testResourceURI"
+                        }
+                    ],
+                    "available": 1
+                },
+                "urls": [
+                    {
+                        "type": "detail",
+                        "url": "testURL"
+                    }
+                ],
+                "resourceURI": "testResourceURI",
+                "description": "",
+                "modified": "2014-04-29T14:18:17+0000",
+                "name": "3-D Man"
+            }
+        ],
+        "offset": 0,
+        "count": 1,
+        "total": 1564,
+        "limit": 20
+    },
+    "code": 200,
+    "copyright": "© 2025 MARVEL",
+    "attributionText": "Data provided by Marvel. © 2025 MARVEL",
+    "attributionHTML": "testAttributionHTML",
+    "etag": "c41d2e5103ad981e6db39dbad7550b7b09a0d80c"
+}

@@ -10,11 +10,11 @@ import Foundation
 
 public final class MarvelRepository {
     private let baseURL: String
-    private let session: URLSession
+    private let networkManager: NetworkManager
     
-    public init(baseURL: String, session: URLSession = .shared) {
+    public init(baseURL: String, networkManager: NetworkManager) {
         self.baseURL = baseURL
-        self.session = session
+        self.networkManager = networkManager
     }
 }
 
@@ -38,40 +38,35 @@ private extension MarvelRepository {
 
 // MARK: - MarvelRepositoryProtocol
 extension MarvelRepository: MarvelRepositoryProtocol {
-    public func getHeroes() async throws -> CharacterDataContainer {
-        let url = try buildURL(for: .heroes)
-        let (data, response) = try await session.data(from: url)
-        try validateResponse(response)
-        let jsonDecoder = JSONDecoder()
-        let dataContainer = try jsonDecoder.decode(CharacterDataContainerDTO.self, from: data)
-        return dataContainer.toDomainModel()
+    public func getHeroes(page: Int) async throws -> CharacterDataContainer {
+        let url = try buildURL(for: .heroes, page: page)
+        let entities: CharacterDataContainerDTO = try await networkManager.fetch(from: url)
+        return entities.toDomainModel()
     }
 }
 
 // MARK: - Private
 private extension MarvelRepository {
-    func buildURL(for endpoint: Endpoint) throws -> URL {
+    func buildURL(for endpoint: Endpoint, page: Int, limit: Int = 20) throws -> URL {
         let ts = String(Int(Date().timeIntervalSince1970))
         let privateKey = Constant.privateKey
         let publicKey = Constant.publicKey
         let hash = "\(ts)\(privateKey)\(publicKey)".md5
+        let safePage = max(1, page)
+        let offset = (safePage - 1) * limit
         let parameters: [String: String] = ["apikey": publicKey,
                                             "ts": ts,
-                                            "hash": hash]
+                                            "hash": hash,
+                                            "limit": String(limit),
+                                            "offset": String(offset)]
         guard var urlComponent = URLComponents(string: "\(baseURL)\(endpoint.path)") else {
             throw URLError(.badURL)
         }
         urlComponent.queryItems = parameters.map { URLQueryItem(name: $0.key, value: $0.value) }
+        
         guard let url = urlComponent.url else {
             throw URLError(.badURL)
         }
         return url
-    }
-    
-    func validateResponse(_ response: URLResponse) throws {
-        guard let httpResponse = response as? HTTPURLResponse,
-              (200...299).contains(httpResponse.statusCode) else {
-            throw URLError(.badServerResponse)
-        }
     }
 }

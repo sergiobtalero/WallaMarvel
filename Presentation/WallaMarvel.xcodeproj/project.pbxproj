@@ -114,7 +114,6 @@
 				1A0E3A982862F7E200132FCB /* AppDelegate.swift */,
 				1A0E3A9A2862F7E200132FCB /* SceneDelegate.swift */,
 				1A821EC42862FD470024D397 /* List Heroes */,
-				1A821EC52862FD500024D397 /* Detail Heroe */,
 				1A0E3AA12862F7E300132FCB /* Assets.xcassets */,
 				1A0E3AA32862F7E300132FCB /* LaunchScreen.storyboard */,
 				1A0E3AA62862F7E300132FCB /* Info.plist */,
@@ -149,13 +148,6 @@
 				1A821ED92863096C0024D397 /* ListHeroesPresenter.swift */,
 			);
 			path = "List Heroes";
-			sourceTree = "<group>";
-		};
-		1A821EC52862FD500024D397 /* Detail Heroe */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "Detail Heroe";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
