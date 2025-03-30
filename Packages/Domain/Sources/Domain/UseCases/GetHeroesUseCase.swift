@@ -11,16 +11,16 @@ public protocol GetHeroesUseCaseProtocol {
     func execute() async throws -> CharacterDataContainer
 }
 
-final class GetHeroesUseCase {
+public final class GetHeroesUseCase {
     private let repository: MarvelRepositoryProtocol
     
-    init(repository: MarvelRepositoryProtocol) {
+    public init(repository: MarvelRepositoryProtocol) {
         self.repository = repository
     }
 }
 
 extension GetHeroesUseCase: GetHeroesUseCaseProtocol {
-    func execute() async throws -> CharacterDataContainer {
+    public func execute() async throws -> CharacterDataContainer {
         try await repository.getHeroes()
     }
 }

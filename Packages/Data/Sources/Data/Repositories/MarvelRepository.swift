@@ -8,11 +8,11 @@
 import Domain
 import Foundation
 
-final class MarvelRepository {
+public final class MarvelRepository {
     private let baseURL: String
     private let session: URLSession
     
-    init(baseURL: String, session: URLSession = .shared) {
+    public init(baseURL: String, session: URLSession = .shared) {
         self.baseURL = baseURL
         self.session = session
     }
@@ -38,7 +38,7 @@ private extension MarvelRepository {
 
 // MARK: - MarvelRepositoryProtocol
 extension MarvelRepository: MarvelRepositoryProtocol {
-    func getHeroes() async throws -> CharacterDataContainer {
+    public func getHeroes() async throws -> CharacterDataContainer {
         let url = try buildURL(for: .heroes)
         let (data, response) = try await session.data(from: url)
         try validateResponse(response)
