@@ -1,3 +1,4 @@
+import Domain
 import UIKit
 
 final class ListHeroesViewController: UIViewController {
@@ -24,7 +25,7 @@ final class ListHeroesViewController: UIViewController {
 
 extension ListHeroesViewController: ListHeroesUI {
     func update(heroes: [CharacterDataModel]) {
-        listHeroesProvider?.heroes = heroes
+        listHeroesProvider?.heroes.append(contentsOf: heroes)
     }
 }
 
@@ -35,5 +36,16 @@ extension ListHeroesViewController: UITableViewDelegate {
         listHeroesViewController.presenter = presenter
         
         navigationController?.pushViewController(listHeroesViewController, animated: true)
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+        let frameHeight = scrollView.frame.height
+        
+        let threshold: CGFloat = 200
+        if offsetY > contentHeight - frameHeight - threshold {
+            presenter?.getHeroes()
+        }
     }
 }
