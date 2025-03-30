@@ -13,32 +13,38 @@ struct HeroesListView: View {
     @EnvironmentObject private var coordinator: AppCoordinator
     
     private let columns: [GridItem] = [
-        GridItem(.flexible()),
-        GridItem(.flexible())
+        GridItem(.flexible(), spacing: .zero)
     ]
     
     var body: some View {
         ScrollView {
-            LazyVGrid(columns: columns) {
-                ForEach(viewModel.heroes, id: \.id) { hero in
+            LazyVGrid(columns: columns, spacing: 8) {
+                ForEach(viewModel.filteredHeroes) { hero in
                     HeroGridItemView(hero: hero)
                     .onAppear {
-                        if hero == viewModel.heroes.last {
+                        if hero == viewModel.filteredHeroes.last {
                             Task {
                                 await viewModel.loadNextPage()
                             }
                         }
+//                        guard !viewModel.filteredHeroes.isEmpty else { return }
+//                        viewModel.filteredHeroes.count
                     }
                     .onTapGesture {
                         coordinator.goToHeroDetail(id: hero.id)
                     }
                 }
             }
+            .padding(.horizontal)
         }
         .task {
             await viewModel.fetchHeroes()
         }
         .navigationTitle(viewModel.navigationTitle)
+        .searchable(text: $viewModel.query)
+        .onChange(of: viewModel.query) { _, newValue in
+            viewModel.search(for: newValue)
+        }
     }
 }
 import Domain
@@ -46,20 +52,18 @@ struct HeroGridItemView: View {
     let hero: CharacterDataModel
 
     var body: some View {
-        VStack {
+        ZStack(alignment: .bottomLeading) {
             KFImage(hero.imageURL)
                 .resizable()
-                .frame(width: 150, height: 150)
-                .padding()
             Text(hero.name)
                 .font(.headline)
                 .fontWeight(.semibold)
                 .foregroundStyle(.white)
                 .multilineTextAlignment(.center)
-                .padding([.bottom, .horizontal])
+                .padding()
         }
+        .frame(height: 190)
         .background(.red)
-        .cornerRadius(15)
     }
 }
 
