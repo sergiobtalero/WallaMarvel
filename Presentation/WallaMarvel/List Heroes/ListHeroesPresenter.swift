@@ -1,3 +1,5 @@
+import Composition
+import Domain
 import Foundation
 
 protocol ListHeroesPresenterProtocol: AnyObject {
@@ -14,7 +16,8 @@ final class ListHeroesPresenter: ListHeroesPresenterProtocol {
     var ui: ListHeroesUI?
     private let getHeroesUseCase: GetHeroesUseCaseProtocol
     
-    init(getHeroesUseCase: GetHeroesUseCaseProtocol = GetHeroes()) {
+    
+    init(getHeroesUseCase: GetHeroesUseCaseProtocol = ModuleFactory.makeGetHeroesUseCase()) {
         self.getHeroesUseCase = getHeroesUseCase
     }
     
@@ -25,9 +28,16 @@ final class ListHeroesPresenter: ListHeroesPresenterProtocol {
     // MARK: UseCases
     
     func getHeroes() {
-        getHeroesUseCase.execute { characterDataContainer in
-            print("Characters \(characterDataContainer.characters)")
-            self.ui?.update(heroes: characterDataContainer.characters)
+//        getHeroesUseCase.execute { characterDataContainer in
+//            print("Characters \(characterDataContainer.characters)")
+//            self.ui?.update(heroes: characterDataContainer.characters)
+//        }
+        Task {
+            guard let heroes = try? await getHeroesUseCase.execute() else {
+                print("OOOPS")
+                return
+            }
+            ui?.update(heroes: heroes.characters)
         }
     }
 }

@@ -8,10 +8,10 @@
 import Foundation
 
 public struct CharacterDataContainer {
-    let count: Int
-    let limit: Int
-    let offset: Int
-    let characters: [CharacterDataModel]
+    public let count: Int
+    public let limit: Int
+    public let offset: Int
+    public let characters: [CharacterDataModel]
     
     public init(count: Int, limit: Int, offset: Int, characters: [CharacterDataModel]) {
         self.count = count

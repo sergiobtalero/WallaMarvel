@@ -8,9 +8,9 @@
 import Foundation
 
 public struct CharacterDataModel {
-    let id: Int
-    let name: String
-    let thumbnail: Thumbnail
+    public let id: Int
+    public let name: String
+    public let thumbnail: Thumbnail
     
     public init(id: Int, name: String, thumbnail: Thumbnail) {
         self.id = id

@@ -1,3 +1,4 @@
+import Domain
 import UIKit
 
 final class ListHeroesViewController: UIViewController {

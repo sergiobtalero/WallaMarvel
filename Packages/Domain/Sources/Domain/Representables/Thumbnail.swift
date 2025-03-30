@@ -8,8 +8,8 @@
 import Foundation
 
 public struct Thumbnail {
-    let path: String
-    let `extension`: String
+    public let path: String
+    public let `extension`: String
     
     public init(path: String, extension: String) {
         self.path = path
