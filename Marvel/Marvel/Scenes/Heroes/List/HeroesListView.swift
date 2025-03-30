@@ -41,7 +41,7 @@ struct HeroesListView: View {
             await viewModel.fetchHeroes()
         }
         .navigationTitle(viewModel.navigationTitle)
-        .searchable(text: $viewModel.query)
+        .searchable(text: $viewModel.query, placement: .navigationBarDrawer(displayMode: .always))
         .onChange(of: viewModel.query) { _, newValue in
             viewModel.search(for: newValue)
         }
