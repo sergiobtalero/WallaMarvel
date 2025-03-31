@@ -10,7 +10,7 @@ import Kingfisher
 import SwiftUI
 
 struct HeroGridItemView: View {
-    let hero: CharacterDataModel
+    let hero: Hero
     
     var body: some View {
         VStack(alignment: .center) {

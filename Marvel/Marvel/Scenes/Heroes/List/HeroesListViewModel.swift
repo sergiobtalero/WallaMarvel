@@ -12,21 +12,21 @@ import Foundation
 
 protocol HeroesListViewModelProtocol: ObservableObject {
     var navigationTitle: String { get }
-    var heroes: [CharacterDataModel] { get set }
-    var heroSelected: CharacterDataModel? { get set }
+    var heroes: [Hero] { get set }
+    var heroSelected: Hero? { get set }
     var query: String { get set }
     var isLoading: Bool { get }
     
     func loadFirstPage() async
     func loadNextPage() async
-    func didSelectHero(_ hero: CharacterDataModel?)
+    func didSelectHero(_ hero: Hero?)
 }
 
 final class HeroesListViewModel {
     private let getHeroesUseCase: GetHeroesUseCaseProtocol
     
     private var subscriptions = Set<AnyCancellable>()
-    private let heroesSubject = CurrentValueSubject<[CharacterDataModel], Never>([])
+    private let heroesSubject = CurrentValueSubject<[Hero], Never>([])
     
     var navigationTitle: String { "Heroes" }
     
@@ -35,8 +35,8 @@ final class HeroesListViewModel {
     private var totalHeroes: Int = .min
     private(set) var isLoading: Bool = false
     
-    @Published var heroSelected: CharacterDataModel?
-    @Published var heroes: [CharacterDataModel] = []
+    @Published var heroSelected: Hero?
+    @Published var heroes: [Hero] = []
     @Published var query: String = ""
     
     init(getHeroesUseCase: GetHeroesUseCaseProtocol = ModuleFactory.makeGetHeroesUseCase()) {
@@ -76,7 +76,7 @@ extension HeroesListViewModel: HeroesListViewModelProtocol {
         }
     }
     
-    func didSelectHero(_ hero: CharacterDataModel?) {
+    func didSelectHero(_ hero: Hero?) {
         heroSelected = hero
     }
 }
@@ -104,7 +104,7 @@ private extension HeroesListViewModel {
 
 // MARK: - Private
 private extension HeroesListViewModel {
-    func updateHeroes(_ heroes: [CharacterDataModel]) {
+    func updateHeroes(_ heroes: [Hero]) {
         var loadedHeroes = heroesSubject.value
         loadedHeroes.append(contentsOf: heroes)
         heroesSubject.send(loadedHeroes)

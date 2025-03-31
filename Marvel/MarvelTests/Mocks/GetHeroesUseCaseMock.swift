@@ -19,8 +19,8 @@ final class GetHeroesUseCaseMock: GetHeroesUseCaseProtocol {
     
     convenience init() {
         let characters = [
-            CharacterDataModel(id: 1, name: "Spider Man", description: "Spider Man", thumbnail: Thumbnail(path: "path", extension: "extension")),
-            CharacterDataModel(id: 2, name: "Hulk", description: "Hulk", thumbnail: Thumbnail(path: "path", extension: "extension"))
+            Hero(id: 1, name: "Spider Man", description: "Spider Man", thumbnail: Thumbnail(path: "path", extension: "extension")),
+            Hero(id: 2, name: "Hulk", description: "Hulk", thumbnail: Thumbnail(path: "path", extension: "extension"))
         ]
         self.init(response: CharacterDataContainer(count: 10, limit: 100, offset: 0, total: 100, characters: characters))
     }

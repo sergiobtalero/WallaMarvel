@@ -14,10 +14,10 @@ protocol HeroDetailViewModelProtocol: ObservableObject {
 }
 
 final class HeroDetailViewModel {
-    private let hero: CharacterDataModel
+    private let hero: Hero
     private let getHeroDetailsUseCase: GetHeroDetailsUseCaseProtocol
     
-    init(hero: CharacterDataModel,
+    init(hero: Hero,
          getHeroDetailsUseCase: GetHeroDetailsUseCaseProtocol = ModuleFactory.makeGetHeroDetailsUseCase()) {
         self.hero = hero
         self.getHeroDetailsUseCase = getHeroDetailsUseCase

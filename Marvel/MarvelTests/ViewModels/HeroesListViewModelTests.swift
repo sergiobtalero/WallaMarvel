@@ -25,11 +25,11 @@ struct HeroesListViewModelTests {
     @Test
     func loadNextPage_appendsHeroes() async throws {
         let initialCharacters = [
-            CharacterDataModel(id: 1, name: "Spider Man", description: "Spider Man", thumbnail: Thumbnail(path: "path", extension: "extension"))
+            Hero(id: 1, name: "Spider Man", description: "Spider Man", thumbnail: Thumbnail(path: "path", extension: "extension"))
         ]
         let response = CharacterDataContainer(count: 100, limit: 100, offset: 0, total: 100, characters: initialCharacters)
         let nextCharacters = [
-            CharacterDataModel(id: 2, name: "Hulk", description: "Hulk", thumbnail: Thumbnail(path: "path", extension: "extension"))
+            Hero(id: 2, name: "Hulk", description: "Hulk", thumbnail: Thumbnail(path: "path", extension: "extension"))
         ]
         let nextResponse = CharacterDataContainer(count: 100, limit: 100, offset: 0, total: 100, characters: nextCharacters)
         
@@ -49,7 +49,7 @@ struct HeroesListViewModelTests {
     func didSelectHero_setsSelectedHero() {
         let getHeroesUseCaseMock = GetHeroesUseCaseMock()
         let viewModel = HeroesListViewModel(getHeroesUseCase: getHeroesUseCaseMock)
-        let hero = CharacterDataModel(id: 1, name: "Spider Man", description: "Spider Man", thumbnail: Thumbnail(path: "path", extension: "extension"))
+        let hero = Hero(id: 1, name: "Spider Man", description: "Spider Man", thumbnail: Thumbnail(path: "path", extension: "extension"))
         viewModel.didSelectHero(hero)
         
         #expect(viewModel.heroSelected == hero)
@@ -73,7 +73,7 @@ struct HeroesListViewModelTests {
     @Test
     func loadNextPage_doesNotTrigger_whenQueryIsNotEmpty() async throws {
         let initialCharacters = [
-            CharacterDataModel(id: 1, name: "Spider Man", description: "Spider Man", thumbnail: Thumbnail(path: "path", extension: "extension"))
+            Hero(id: 1, name: "Spider Man", description: "Spider Man", thumbnail: Thumbnail(path: "path", extension: "extension"))
         ]
         let response = CharacterDataContainer(count: 100, limit: 100, offset: 0, total: 100, characters: initialCharacters)
         let getHeroesUseCaseMock = GetHeroesUseCaseMock(response: response)

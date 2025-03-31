@@ -13,8 +13,8 @@ struct HeroDTO: DTOConvertible {
     let description: String
     let thumbnail: ThumbnailDTO
     
-    func toDomainModel() -> CharacterDataModel {
-        return CharacterDataModel(
+    func toDomainModel() -> Hero {
+        return Hero(
             id: id,
             name: name,
             description: description,
