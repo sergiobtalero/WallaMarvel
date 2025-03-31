@@ -5,40 +5,55 @@
 //  Created by Sergio David Bravo Talero on 30/3/25.
 //
 
+import Combine
 import Composition
 import Domain
 import Foundation
 
-final class HeroesListViewModel: ObservableObject {
+protocol HeroesListViewModelProtocol: ObservableObject {
+    var navigationTitle: String { get }
+    var heroes: [CharacterDataModel] { get set }
+    var query: String { get set }
+    
+    func loadFirstPage() async
+    func loadNextPage() async
+}
+
+final class HeroesListViewModel {
     private let getHeroesUseCase: GetHeroesUseCaseProtocol
-    private var currentPage: Int = 1
-    private var canLoadMore: Bool = true
+    
+    private var subscriptions = Set<AnyCancellable>()
+    private let heroesSubject = CurrentValueSubject<[CharacterDataModel], Never>([])
     
     var navigationTitle: String { "Heroes" }
     
-    @Published var isLoading: Bool = false
+    private var currentPage: Int = 1
+    private var canLoadMore: Bool = true
+    private var totalHeroes: Int = .min
+    private var isLoading: Bool = false
+    
     @Published var heroes: [CharacterDataModel] = []
-    @Published var filteredHeroes: [CharacterDataModel] = []
     @Published var query: String = ""
     
     init(getHeroesUseCase: GetHeroesUseCaseProtocol = ModuleFactory.makeGetHeroesUseCase()) {
         self.getHeroesUseCase = getHeroesUseCase
+        setupBindings()
     }
-    
-    @MainActor func fetchHeroes() async {
+}
+
+// MARK: - HeroesListViewModelProtocol
+extension HeroesListViewModel: HeroesListViewModelProtocol {
+    @MainActor func loadFirstPage() async {
         isLoading = true
+        currentPage = 1
         
         defer {
             isLoading = false
         }
         
-        do {
-            let container = try await getHeroesUseCase.execute(page: currentPage)
-            heroes = container.characters
-            canLoadMore = heroes.count < container.total
-            currentPage += 1
-        } catch {
-            // TODO: Handle error
+        if let container = try? await getHeroesUseCase.execute(page: currentPage) {
+            totalHeroes = max(container.total, totalHeroes)
+            updateHeroes(container.characters)
         }
     }
     
@@ -53,17 +68,39 @@ final class HeroesListViewModel: ObservableObject {
         }
         
         if let container = try? await getHeroesUseCase.execute(page: currentPage) {
-            heroes.append(contentsOf: container.characters)
-            canLoadMore = heroes.count < container.total
-            currentPage += 1
+            updateHeroes(container.characters)
         }
     }
+}
+
+// MARK: - Bindings
+private extension HeroesListViewModel {
+    func setupBindings() {
+        bindQuery()
+    }
     
-    func search(for query: String) {
-        guard !query.isEmpty else {
-            filteredHeroes.removeAll()
-            return
-        }
-        filteredHeroes = heroes.filter { $0.name.localizedCaseInsensitiveContains(query) }
+    func bindQuery() {
+        heroesSubject
+            .combineLatest($query)
+            .sink { [weak self] allHeroes, query in
+                guard let self else { return }
+                if query.isEmpty {
+                    heroes = allHeroes
+                } else {
+                    heroes = allHeroes.filter { $0.name.localizedCaseInsensitiveContains(query) }
+                }
+            }
+            .store(in: &subscriptions)
+    }
+}
+
+// MARK: - Private
+private extension HeroesListViewModel {
+    func updateHeroes(_ heroes: [CharacterDataModel]) {
+        var loadedHeroes = heroesSubject.value
+        loadedHeroes.append(contentsOf: heroes)
+        heroesSubject.send(loadedHeroes)
+        canLoadMore = loadedHeroes.count < totalHeroes
+        currentPage += 1
     }
 }

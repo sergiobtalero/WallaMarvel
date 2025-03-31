@@ -9,8 +9,8 @@ import Domain
 import SwiftUI
 import Kingfisher
 
-struct HeroesListView: View {
-    @StateObject private var viewModel = HeroesListViewModel()
+struct HeroesListView<VM: HeroesListViewModelProtocol>: View {
+    @StateObject private var viewModel: VM
     @EnvironmentObject private var coordinator: AppCoordinator
     
     private let columns: [GridItem] = [
@@ -18,26 +18,26 @@ struct HeroesListView: View {
         GridItem(.flexible(), spacing: 8)
     ]
     
-    private var heroes: [CharacterDataModel] {
-        viewModel.filteredHeroes.isEmpty ? viewModel.heroes : viewModel.filteredHeroes
+    init(viewModel: VM) {
+        _viewModel = StateObject(wrappedValue: viewModel)
     }
     
     var body: some View {
         ScrollView {
             LazyVGrid(columns: columns, spacing: 8) {
-                ForEach(heroes) { hero in
+                ForEach(viewModel.heroes) { hero in
                     HeroGridItemView(hero: hero)
-                    .onAppear {
-                        guard viewModel.filteredHeroes.isEmpty else { return }
-                        
-                        let targetIndex = heroes.count - 5
-                        if targetIndex < heroes.count,
-                            heroes[targetIndex] == hero {
-                            Task {
-                                await viewModel.loadNextPage()
-                            }
-                        }
-                    }
+//                    .onAppear {
+//                        guard viewModel.filteredHeroes.isEmpty else { return }
+//                        
+//                        let targetIndex = heroes.count - 5
+//                        if targetIndex < heroes.count,
+//                            heroes[targetIndex] == hero {
+//                            Task {
+//                                await viewModel.loadNextPage()
+//                            }
+//                        }
+//                    }
                     .onTapGesture {
                         coordinator.goToHeroDetail(id: hero.id)
                     }
@@ -46,13 +46,13 @@ struct HeroesListView: View {
             .padding(.horizontal)
         }
         .onViewDidLoad {
-            Task { await viewModel.fetchHeroes() }
+            Task { await viewModel.loadFirstPage() }
         }
         .navigationTitle(viewModel.navigationTitle)
         .searchable(text: $viewModel.query, placement: .navigationBarDrawer(displayMode: .always))
-        .onChange(of: viewModel.query) { _, newValue in
-            viewModel.search(for: newValue)
-        }
+//        .onChange(of: viewModel.query) { _, newValue in
+//            viewModel.search(for: newValue)
+//        }
     }
 }
 import Domain
@@ -88,8 +88,8 @@ struct HeroGridItemView: View {
     }
 }
 
-#Preview {
-    NavigationStack{
-        HeroesListView()
-    }
-}
+//#Preview {
+//    NavigationStack{
+//        HeroesListView()
+//    }
+//}

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct CharacterDataModel: Identifiable, Equatable {
+public struct CharacterDataModel: Identifiable, Equatable, Sendable {
     public let id: Int
     public let name: String
     public let description: String
