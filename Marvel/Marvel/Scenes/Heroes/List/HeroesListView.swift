@@ -33,7 +33,7 @@ struct HeroesListView<VM: HeroesListViewModelProtocol>: View {
                             }
                         }
                         .onTapGesture {
-                            coordinator.goToHeroDetail(id: viewModel.heroes[index].id)
+                            viewModel.didSelectHero(viewModel.heroes[index])
                         }
                 }
             }
@@ -42,6 +42,11 @@ struct HeroesListView<VM: HeroesListViewModelProtocol>: View {
         .onViewDidLoad {
             Task { await viewModel.loadFirstPage() }
         }
+        .onChange(of: viewModel.heroSelected, { _, hero in
+            if let hero {
+                coordinator.goToHeroDetail(id: hero.id)
+            }
+        })
         .navigationTitle(viewModel.navigationTitle)
         .searchable(text: $viewModel.query, placement: .navigationBarDrawer(displayMode: .always))
     }
@@ -62,7 +67,15 @@ private extension HeroesListView {
 }
 
 #Preview {
+    @Previewable @State var coordinator = AppCoordinator()
     NavigationStack{
         HeroesListView(viewModel: HeroesListViewModel())
+            .navigationDestination(for: Route.self) { route in
+                switch route {
+                case .detail(let id):
+                    Text("Detail \(id)")
+                }
+            }
     }
+    .environmentObject(coordinator)
 }

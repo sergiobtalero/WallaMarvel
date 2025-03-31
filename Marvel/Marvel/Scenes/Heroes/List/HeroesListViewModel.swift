@@ -13,11 +13,13 @@ import Foundation
 protocol HeroesListViewModelProtocol: ObservableObject {
     var navigationTitle: String { get }
     var heroes: [CharacterDataModel] { get set }
+    var heroSelected: CharacterDataModel? { get set }
     var query: String { get set }
     var isLoading: Bool { get }
     
     func loadFirstPage() async
     func loadNextPage() async
+    func didSelectHero(_ hero: CharacterDataModel)
 }
 
 final class HeroesListViewModel {
@@ -33,6 +35,7 @@ final class HeroesListViewModel {
     private var totalHeroes: Int = .min
     private(set) var isLoading: Bool = false
     
+    @Published var heroSelected: CharacterDataModel?
     @Published var heroes: [CharacterDataModel] = []
     @Published var query: String = ""
     
@@ -71,6 +74,10 @@ extension HeroesListViewModel: HeroesListViewModelProtocol {
         if let container = try? await getHeroesUseCase.execute(page: currentPage) {
             updateHeroes(container.characters)
         }
+    }
+    
+    func didSelectHero(_ hero: CharacterDataModel) {
+        heroSelected = hero
     }
 }
 
