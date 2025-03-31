@@ -1,3 +1,5 @@
+import Composition
+import Domain
 import Foundation
 
 protocol ListHeroesPresenterProtocol: AnyObject {
@@ -7,14 +9,14 @@ protocol ListHeroesPresenterProtocol: AnyObject {
 }
 
 protocol ListHeroesUI: AnyObject {
-    func update(heroes: [CharacterDataModel])
+    func update(heroes: [Hero])
 }
 
 final class ListHeroesPresenter: ListHeroesPresenterProtocol {
     var ui: ListHeroesUI?
     private let getHeroesUseCase: GetHeroesUseCaseProtocol
     
-    init(getHeroesUseCase: GetHeroesUseCaseProtocol = GetHeroes()) {
+    init(getHeroesUseCase: GetHeroesUseCaseProtocol = ModuleFactory.makeGetHeroesUseCase()) {
         self.getHeroesUseCase = getHeroesUseCase
     }
     
@@ -25,9 +27,10 @@ final class ListHeroesPresenter: ListHeroesPresenterProtocol {
     // MARK: UseCases
     
     func getHeroes() {
-        getHeroesUseCase.execute { characterDataContainer in
-            print("Characters \(characterDataContainer.characters)")
-            self.ui?.update(heroes: characterDataContainer.characters)
+        Task {
+            if let container = try? await getHeroesUseCase.execute(page: 1) {
+                self.ui?.update(heroes: container.results)
+            }
         }
     }
 }

@@ -1,3 +1,4 @@
+import Domain
 import UIKit
 
 final class ListHeroesViewController: UIViewController {
@@ -23,7 +24,7 @@ final class ListHeroesViewController: UIViewController {
 }
 
 extension ListHeroesViewController: ListHeroesUI {
-    func update(heroes: [CharacterDataModel]) {
+    func update(heroes: [Hero]) {
         listHeroesProvider?.heroes = heroes
     }
 }
