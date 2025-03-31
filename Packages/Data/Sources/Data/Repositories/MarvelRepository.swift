@@ -67,9 +67,10 @@ extension MarvelRepository: MarvelRepositoryProtocol {
         return entities.results.compactMap { $0.toDomainModel() }
     }
     
-    public func getSeriesOfHero(id: Int) async throws {
+    public func getSeriesOfHero(id: Int) async throws -> [Series] {
         let url = try buildURL(for: .series(id: id))
-        let entities: ContainerDTO<HeroDTO> = try await networkManager.fetch(from: url)
+        let entities: ContainerDTO<SeriesDTO> = try await networkManager.fetch(from: url)
+        return entities.results.compactMap { $0.toDomainModel() }
     }
 }
 

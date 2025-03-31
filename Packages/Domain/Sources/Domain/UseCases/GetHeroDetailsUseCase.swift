@@ -21,9 +21,11 @@ public final class GetHeroDetailsUseCase {
 
 extension GetHeroDetailsUseCase: GetHeroDetailsUseCaseProtocol {
     public func execute(id: Int) async throws -> Hero {
-        let heroDetails = try await repository.getDetailsOfHero(id: id)
-        let comics = try await repository.getComicsOfHero(id: id)
-        try await repository.getSeriesOfHero(id: id)
-        return heroDetails
+        var details = try await repository.getDetailsOfHero(id: id)
+        let comics = try? await repository.getComicsOfHero(id: id)
+        let series = try? await repository.getSeriesOfHero(id: id)
+        comics.map { details.comics = $0 }
+        series.map { details.series = $0 }
+        return details
     }
 }

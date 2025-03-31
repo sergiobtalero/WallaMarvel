@@ -13,6 +13,7 @@ public struct Hero: Identifiable, Equatable, Sendable, Hashable {
     public let description: String
     public let thumbnail: Thumbnail
     public var comics: [Comic] = []
+    public var series: [Series] = []
     
     public var imageURL: URL? {
         let path = thumbnail.path + "." + thumbnail.extension
