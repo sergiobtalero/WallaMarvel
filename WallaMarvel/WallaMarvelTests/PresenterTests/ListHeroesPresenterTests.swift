@@ -10,23 +10,45 @@ import XCTest
 @testable import WallaMarvel
 
 final class ListHeroesPresenterTests: XCTestCase {
-    func test_loadHeroes_callsUpdateOnUI() {
-        let updateExpectation = expectation(description: "update called")
+    func test_loadHeroes_callsUpdateOnUI() async {
         let getHeroesUseCase = GetHeroesUseCaseMock()
         let sut = ListHeroesPresenter(getHeroesUseCase: getHeroesUseCase)
-        let spy = ListHeroesUISpy(updateExpectation: updateExpectation)
+        let spy = ListHeroesUISpy()
         sut.ui = spy
-        sut.getHeroes()
-        wait(for: [updateExpectation], timeout: 5)
+        await sut.getHeroes()
         XCTAssertEqual(spy.updateCalledCount, 1)
     }
     
-    func test_loadHeroes_whenFails_doesNotUpdateUI() {
+    func test_loadHeroes_whenFails_doesNotUpdateUI() async {
+        let getHeroesUseCase = GetHeroesUseCaseMock()
+        getHeroesUseCase.error = .init(description: "Random error")
+        let sut = ListHeroesPresenter(getHeroesUseCase: getHeroesUseCase)
+        let spy = ListHeroesUISpy()
+        sut.ui = spy
+        await sut.getHeroes()
+        XCTAssertEqual(spy.updateCalledCount, 0)
+    }
+    
+    func test_loadNextPage_callsUpdateOnUI() async {
         let getHeroesUseCase = GetHeroesUseCaseMock()
         let sut = ListHeroesPresenter(getHeroesUseCase: getHeroesUseCase)
-        let spy = ListHeroesUISpy(updateExpectation: nil)
+        let spy = ListHeroesUISpy()
         sut.ui = spy
-        sut.getHeroes()
-        XCTAssertEqual(spy.updateCalledCount, 0)
+        await sut.getHeroes()
+        await sut.loadNextPage()
+        XCTAssertEqual(sut.heroes.count, 2)
+        XCTAssertEqual(spy.updateCalledCount, 2)
+    }
+    
+    func test_loadNextPage_onFiltering_doesNotUPdateUI() async {
+        let getHeroesUseCase = GetHeroesUseCaseMock()
+        let sut = ListHeroesPresenter(getHeroesUseCase: getHeroesUseCase)
+        let spy = ListHeroesUISpy()
+        sut.ui = spy
+        await sut.getHeroes()
+        sut.query("Spider")
+        await sut.loadNextPage()
+        XCTAssertEqual(sut.heroes.count, 1)
+        XCTAssertEqual(spy.updateCalledCount, 2)
     }
 }

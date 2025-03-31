@@ -13,14 +13,17 @@ final class ListHeroesViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        presenter?.getHeroes()
         presenter?.ui = self
         
-        title = presenter?.screenTitle()
+        title = presenter?.navigationTitle
         
         mainView.heroesTableView.delegate = self
         mainView.heroesTableView.dataSource = self
         mainView.searchBar.delegate = self
+        
+        Task {
+            await presenter?.getHeroes()
+        }
     }
 }
 
@@ -56,6 +59,17 @@ extension ListHeroesViewController: UITableViewDelegate {
         listHeroesViewController.presenter = presenter
         
         navigationController?.pushViewController(listHeroesViewController, animated: true)
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+            let contentHeight = scrollView.contentSize.height
+            let frameHeight = scrollView.frame.size.height
+            if offsetY > contentHeight - frameHeight * 2 {
+                Task {
+                    await presenter?.loadNextPage()
+                }
+            }
     }
 }
 
