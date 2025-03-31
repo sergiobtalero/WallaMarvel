@@ -5,6 +5,7 @@
 //  Created by Sergio David Bravo Talero on 30/3/25.
 //
 
+import Domain
 import SwiftUI
 import Kingfisher
 
@@ -13,22 +14,29 @@ struct HeroesListView: View {
     @EnvironmentObject private var coordinator: AppCoordinator
     
     private let columns: [GridItem] = [
-        GridItem(.flexible(), spacing: .zero)
+        GridItem(.flexible(), spacing: 8),
+        GridItem(.flexible(), spacing: 8)
     ]
+    
+    private var heroes: [CharacterDataModel] {
+        viewModel.filteredHeroes.isEmpty ? viewModel.heroes : viewModel.filteredHeroes
+    }
     
     var body: some View {
         ScrollView {
             LazyVGrid(columns: columns, spacing: 8) {
-                ForEach(viewModel.filteredHeroes) { hero in
+                ForEach(heroes) { hero in
                     HeroGridItemView(hero: hero)
                     .onAppear {
-                        if hero == viewModel.filteredHeroes.last {
+                        guard viewModel.filteredHeroes.isEmpty else { return }
+                        
+                        let targetIndex = heroes.count - 5
+                        if targetIndex < heroes.count,
+                            heroes[targetIndex] == hero {
                             Task {
                                 await viewModel.loadNextPage()
                             }
                         }
-//                        guard !viewModel.filteredHeroes.isEmpty else { return }
-//                        viewModel.filteredHeroes.count
                     }
                     .onTapGesture {
                         coordinator.goToHeroDetail(id: hero.id)
@@ -37,8 +45,8 @@ struct HeroesListView: View {
             }
             .padding(.horizontal)
         }
-        .task {
-            await viewModel.fetchHeroes()
+        .onViewDidLoad {
+            Task { await viewModel.fetchHeroes() }
         }
         .navigationTitle(viewModel.navigationTitle)
         .searchable(text: $viewModel.query, placement: .navigationBarDrawer(displayMode: .always))
@@ -52,18 +60,31 @@ struct HeroGridItemView: View {
     let hero: CharacterDataModel
 
     var body: some View {
-        ZStack(alignment: .bottomLeading) {
+        VStack(alignment: .center) {
             KFImage(hero.imageURL)
                 .resizable()
+            
             Text(hero.name)
                 .font(.headline)
                 .fontWeight(.semibold)
                 .foregroundStyle(.white)
                 .multilineTextAlignment(.center)
-                .padding()
+                .frame(height: 50)
+                .padding(.horizontal)
+            
+            Spacer()
+            
         }
-        .frame(height: 190)
+        .frame(height: 230)
         .background(.red)
+        .clipShape(
+            RoundedRectangle(
+                cornerSize: CGSize(
+                    width: 12,
+                    height: 12
+                )
+            )
+        )
     }
 }
 

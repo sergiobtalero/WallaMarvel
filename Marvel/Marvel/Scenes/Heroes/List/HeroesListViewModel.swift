@@ -13,10 +13,11 @@ final class HeroesListViewModel: ObservableObject {
     private let getHeroesUseCase: GetHeroesUseCaseProtocol
     private var currentPage: Int = 1
     private var canLoadMore: Bool = true
-    private var heroes: [CharacterDataModel] = []
+    
     var navigationTitle: String { "Heroes" }
     
     @Published var isLoading: Bool = false
+    @Published var heroes: [CharacterDataModel] = []
     @Published var filteredHeroes: [CharacterDataModel] = []
     @Published var query: String = ""
     
@@ -34,7 +35,6 @@ final class HeroesListViewModel: ObservableObject {
         do {
             let container = try await getHeroesUseCase.execute(page: currentPage)
             heroes = container.characters
-            search(for: query)
             canLoadMore = heroes.count < container.total
             currentPage += 1
         } catch {
@@ -54,17 +54,16 @@ final class HeroesListViewModel: ObservableObject {
         
         if let container = try? await getHeroesUseCase.execute(page: currentPage) {
             heroes.append(contentsOf: container.characters)
-            search(for: query)
             canLoadMore = heroes.count < container.total
             currentPage += 1
         }
     }
     
     func search(for query: String) {
-        if query.isEmpty {
-            filteredHeroes = heroes
-        } else {
-            filteredHeroes = heroes.filter { $0.name.localizedCaseInsensitiveContains(query) }
+        guard !query.isEmpty else {
+            filteredHeroes.removeAll()
+            return
         }
+        filteredHeroes = heroes.filter { $0.name.localizedCaseInsensitiveContains(query) }
     }
 }
