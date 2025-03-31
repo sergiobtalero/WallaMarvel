@@ -26,6 +26,9 @@
 		298AF5F32D9B1FD400D56BBD /* GetHeroesUseCaseMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 298AF5F22D9B1FD400D56BBD /* GetHeroesUseCaseMock.swift */; };
 		298AF5F62D9B213D00D56BBD /* ListHeroesPresenterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 298AF5F52D9B213D00D56BBD /* ListHeroesPresenterTests.swift */; };
 		298AF5F82D9B229700D56BBD /* ListHeroesUISpy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 298AF5F72D9B229700D56BBD /* ListHeroesUISpy.swift */; };
+		298AF5FA2D9B2B6E00D56BBD /* HeroDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 298AF5F92D9B2B6E00D56BBD /* HeroDetailViewController.swift */; };
+		298AF5FC2D9B2BA000D56BBD /* HeroDetailPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 298AF5FB2D9B2BA000D56BBD /* HeroDetailPresenter.swift */; };
+		298AF5FE2D9B2BDD00D56BBD /* HeroDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 298AF5FD2D9B2BDD00D56BBD /* HeroDetailView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,6 +67,9 @@
 		298AF5F22D9B1FD400D56BBD /* GetHeroesUseCaseMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetHeroesUseCaseMock.swift; sourceTree = "<group>"; };
 		298AF5F52D9B213D00D56BBD /* ListHeroesPresenterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListHeroesPresenterTests.swift; sourceTree = "<group>"; };
 		298AF5F72D9B229700D56BBD /* ListHeroesUISpy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListHeroesUISpy.swift; sourceTree = "<group>"; };
+		298AF5F92D9B2B6E00D56BBD /* HeroDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeroDetailViewController.swift; sourceTree = "<group>"; };
+		298AF5FB2D9B2BA000D56BBD /* HeroDetailPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeroDetailPresenter.swift; sourceTree = "<group>"; };
+		298AF5FD2D9B2BDD00D56BBD /* HeroDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeroDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -164,6 +170,9 @@
 		1A821EC52862FD500024D397 /* Detail Heroe */ = {
 			isa = PBXGroup;
 			children = (
+				298AF5F92D9B2B6E00D56BBD /* HeroDetailViewController.swift */,
+				298AF5FB2D9B2BA000D56BBD /* HeroDetailPresenter.swift */,
+				298AF5FD2D9B2BDD00D56BBD /* HeroDetailView.swift */,
 			);
 			path = "Detail Heroe";
 			sourceTree = "<group>";
@@ -330,10 +339,13 @@
 			files = (
 				1A0E3A9D2862F7E200132FCB /* ListHeroesViewController.swift in Sources */,
 				1A0E3A992862F7E200132FCB /* AppDelegate.swift in Sources */,
+				298AF5FA2D9B2B6E00D56BBD /* HeroDetailViewController.swift in Sources */,
 				1A821EDA2863096C0024D397 /* ListHeroesPresenter.swift in Sources */,
 				1A0E3A9B2862F7E200132FCB /* SceneDelegate.swift in Sources */,
+				298AF5FC2D9B2BA000D56BBD /* HeroDetailPresenter.swift in Sources */,
 				1A3B7326286ADD1E007BF626 /* ListHeroesTableView.swift in Sources */,
 				1A3B7328286ADEE6007BF626 /* ListHeroesTableViewCell.swift in Sources */,
+				298AF5FE2D9B2BDD00D56BBD /* HeroDetailView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
