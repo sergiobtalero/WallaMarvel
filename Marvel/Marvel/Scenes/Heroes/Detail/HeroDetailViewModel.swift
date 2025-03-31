@@ -11,11 +11,13 @@ import Foundation
 
 protocol HeroDetailViewModelProtocol: ObservableObject {
     func loadDetails() async
+    var hero: Hero { get set }
 }
 
 final class HeroDetailViewModel {
-    private let hero: Hero
     private let getHeroDetailsUseCase: GetHeroDetailsUseCaseProtocol
+    
+    @Published var hero: Hero
     
     init(hero: Hero,
          getHeroDetailsUseCase: GetHeroDetailsUseCaseProtocol = ModuleFactory.makeGetHeroDetailsUseCase()) {
@@ -24,13 +26,12 @@ final class HeroDetailViewModel {
     }
 }
 
+// MARK: - HeroDetailViewModelProtocol
 extension HeroDetailViewModel: HeroDetailViewModelProtocol {
-    func loadDetails() async {
-        do {
-            let details = try await getHeroDetailsUseCase.execute(id: hero.id)
-            print(details)
-        } catch {
-            print(error.localizedDescription)
+    @MainActor func loadDetails() async {
+        if let updatedHero = try? await getHeroDetailsUseCase.execute(id: hero.id) {
+            objectWillChange.send()
+            self.hero = updatedHero
         }
     }
 }

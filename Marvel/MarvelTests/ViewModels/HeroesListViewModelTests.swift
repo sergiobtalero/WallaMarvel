@@ -27,11 +27,11 @@ struct HeroesListViewModelTests {
         let initialCharacters = [
             Hero(id: 1, name: "Spider Man", description: "Spider Man", thumbnail: Thumbnail(path: "path", extension: "extension"))
         ]
-        let response = CharacterDataContainer(count: 100, limit: 100, offset: 0, total: 100, characters: initialCharacters)
+        let response = DataContainer<Hero>(count: 100, limit: 100, offset: 0, total: 100, results: initialCharacters)
         let nextCharacters = [
             Hero(id: 2, name: "Hulk", description: "Hulk", thumbnail: Thumbnail(path: "path", extension: "extension"))
         ]
-        let nextResponse = CharacterDataContainer(count: 100, limit: 100, offset: 0, total: 100, characters: nextCharacters)
+        let nextResponse = DataContainer<Hero>(count: 100, limit: 100, offset: 0, total: 100, results: nextCharacters)
         
         let getHeroesUseCaseMock = GetHeroesUseCaseMock(response: response)
         let viewModel = HeroesListViewModel(getHeroesUseCase: getHeroesUseCaseMock)
@@ -75,7 +75,7 @@ struct HeroesListViewModelTests {
         let initialCharacters = [
             Hero(id: 1, name: "Spider Man", description: "Spider Man", thumbnail: Thumbnail(path: "path", extension: "extension"))
         ]
-        let response = CharacterDataContainer(count: 100, limit: 100, offset: 0, total: 100, characters: initialCharacters)
+        let response = DataContainer<Hero>(count: 100, limit: 100, offset: 0, total: 100, results: initialCharacters)
         let getHeroesUseCaseMock = GetHeroesUseCaseMock(response: response)
         let viewModel = HeroesListViewModel(getHeroesUseCase: getHeroesUseCaseMock)
         
