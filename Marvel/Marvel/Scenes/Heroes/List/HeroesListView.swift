@@ -47,6 +47,11 @@ struct HeroesListView<VM: HeroesListViewModelProtocol>: View {
                 coordinator.goToHeroDetail(id: hero.id)
             }
         })
+        .onChange(of: coordinator.routes, { _, newValue in
+            if newValue.isEmpty {
+                viewModel.didSelectHero(nil)
+            }
+        })
         .navigationTitle(viewModel.navigationTitle)
         .searchable(text: $viewModel.query, placement: .navigationBarDrawer(displayMode: .always))
     }

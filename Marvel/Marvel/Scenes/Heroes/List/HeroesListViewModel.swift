@@ -19,7 +19,7 @@ protocol HeroesListViewModelProtocol: ObservableObject {
     
     func loadFirstPage() async
     func loadNextPage() async
-    func didSelectHero(_ hero: CharacterDataModel)
+    func didSelectHero(_ hero: CharacterDataModel?)
 }
 
 final class HeroesListViewModel {
@@ -76,7 +76,7 @@ extension HeroesListViewModel: HeroesListViewModelProtocol {
         }
     }
     
-    func didSelectHero(_ hero: CharacterDataModel) {
+    func didSelectHero(_ hero: CharacterDataModel?) {
         heroSelected = hero
     }
 }
