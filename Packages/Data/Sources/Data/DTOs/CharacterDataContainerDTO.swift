@@ -42,3 +42,5 @@ struct CharacterDataContainerDTO: Decodable {
         )
     }
 }
+
+

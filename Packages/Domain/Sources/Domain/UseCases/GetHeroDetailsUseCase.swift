@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol GetHeroDetailsUseCaseProtocol {
-    func execute(id: String) async throws
+    func execute(id: Int) async throws -> CharacterDataModel
 }
 
 public final class GetHeroDetailsUseCase {
@@ -20,7 +20,10 @@ public final class GetHeroDetailsUseCase {
 }
 
 extension GetHeroDetailsUseCase: GetHeroDetailsUseCaseProtocol {
-    public func execute(id: String) async throws {
-        try await repository.getDetailsOfHero(id: id)
+    public func execute(id: Int) async throws -> CharacterDataModel {
+        let heroDetails = try await repository.getDetailsOfHero(id: id)
+        let comics = try await repository.getComicsOfHero(id: id)
+        try await repository.getSeriesOfHero(id: id)
+        return heroDetails
     }
 }

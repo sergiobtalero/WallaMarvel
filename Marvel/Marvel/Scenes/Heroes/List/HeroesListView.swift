@@ -44,7 +44,7 @@ struct HeroesListView<VM: HeroesListViewModelProtocol>: View {
         }
         .onChange(of: viewModel.heroSelected, { _, hero in
             if let hero {
-                coordinator.goToHeroDetail(id: hero.id)
+                coordinator.goToHeroDetail(hero)
             }
         })
         .onChange(of: coordinator.routes, { _, newValue in

@@ -27,12 +27,16 @@ private extension MarvelRepository {
     
     enum Endpoint {
         case heroes(page: Int, limit: Int)
-        case heroDetail(id: String)
+        case heroDetail(id: Int)
+        case comics(id: Int)
+        case series(id: Int)
         
         var path: String {
             switch self {
             case .heroes: return "/characters"
             case .heroDetail(let id): return "/characters/\(id)"
+            case .comics(let id): return "/characters/\(id)/comics"
+            case .series(let id): return "/characters/\(id)/series"
             }
         }
     }
@@ -47,10 +51,25 @@ extension MarvelRepository: MarvelRepositoryProtocol {
         return entities.toDomainModel()
     }
     
-    public func getDetailsOfHero(id: String) async throws {
+    public func getDetailsOfHero(id: Int) async throws -> CharacterDataModel {
         let url = try buildURL(for: .heroDetail(id: id))
         let entities: CharacterDataContainerDTO = try await networkManager.fetch(from: url)
-//        return entities.toDomainModel()
+        if let details = entities.characters.first?.toDomainModel() {
+            return details
+        } else {
+            throw URLError(.badServerResponse)
+        }
+    }
+    
+    public func getComicsOfHero(id: Int) async throws -> [Comic] {
+        let url = try buildURL(for: .comics(id: id))
+        let entities: ContainerDTO<ComicDTO> = try await networkManager.fetch(from: url)
+        return entities.results.compactMap { $0.toDomainModel() }
+    }
+    
+    public func getSeriesOfHero(id: Int) async throws {
+        let url = try buildURL(for: .series(id: id))
+        let entities: CharacterDataContainerDTO = try await networkManager.fetch(from: url)
     }
 }
 

@@ -5,18 +5,19 @@
 //  Created by Sergio David Bravo Talero on 30/3/25.
 //
 
+import Domain
 import SwiftUI
 
 enum Route: Hashable {
-    case detail(id: Int)
+    case detail(hero: CharacterDataModel)
 }
 
 @MainActor
 final class AppCoordinator: ObservableObject {
     @Published var routes: [Route] = []
     
-    func goToHeroDetail(id: Int) {
-        routes.append(.detail(id: id))
+    func goToHeroDetail(_ hero: CharacterDataModel) {
+        routes.append(.detail(hero: hero))
     }
 }
 
@@ -30,8 +31,8 @@ struct MarvelApp: App {
                 HeroesListView(viewModel: HeroesListViewModel())
                     .navigationDestination(for: Route.self) { route in
                         switch route {
-                        case .detail(let id):
-                            Text("Detail \(id)")
+                        case .detail(let hero):
+                            HeroDetailView(viewModel: HeroDetailViewModel(hero: hero))
                         }
                     }
             }
