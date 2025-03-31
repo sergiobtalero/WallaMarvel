@@ -38,5 +38,7 @@ struct HeroGridItemView: View {
                 )
             )
         )
+        .accessibilityElement(children: .combine)
+        .accessibilityIdentifier("heroGridItem")
     }
 }

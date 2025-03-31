@@ -7,37 +7,53 @@
 
 import XCTest
 
-final class MarvelUITests: XCTestCase {
-
+final class MarvelAppUITests: XCTestCase {
+    private var app: XCUIApplication!
+    
     override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-
-        // In UI tests it is usually best to stop immediately when a failure occurs.
         continueAfterFailure = false
-
-        // In UI tests it’s important to set the initial state - such as interface orientation - required for your tests before they run. The setUp method is a good place to do this.
-    }
-
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
-
-    @MainActor
-    func testExample() throws {
-        // UI tests must launch the application that they test.
-        let app = XCUIApplication()
+        app = XCUIApplication()
         app.launch()
-
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
-
-    @MainActor
-    func testLaunchPerformance() throws {
-        if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
-            // This measures how long it takes to launch your application.
-            measure(metrics: [XCTApplicationLaunchMetric()]) {
-                XCUIApplication().launch()
-            }
+    
+    func testHeroListLoads() {
+        let grid = app.scrollViews.firstMatch
+        XCTAssertTrue(grid.waitForExistence(timeout: 5), "Hero grid should be visible")
+    }
+    
+    func testSearchHero() {
+        let searchField = app.searchFields.firstMatch
+        XCTAssertTrue(searchField.waitForExistence(timeout: 5))
+        
+        searchField.tap()
+        searchField.typeText("Spider-Man")
+        
+        // Expect some cell to appear
+        let firstCell = app.scrollViews.children(matching: .other).element(boundBy: 0)
+        XCTAssertTrue(firstCell.waitForExistence(timeout: 5))
+    }
+    
+    func testHeroDetailNavigation() {
+        let scrollViewsQuery = XCUIApplication().scrollViews
+        scrollViewsQuery.children(matching: .other).element(boundBy: 0).children(matching: .other).element.children(matching: .staticText)["3-D Man"].children(matching: .image).element.tap()
+        
+        let elementsQuery = scrollViewsQuery.otherElements
+        let comicsText = elementsQuery.staticTexts["Comics"]
+        let seriesText = elementsQuery.staticTexts["Series"]
+        XCTAssertTrue(comicsText.waitForExistence(timeout: 5))
+        XCTAssertTrue(seriesText.waitForExistence(timeout: 5))
+        
+    }
+    
+    func testPagination() {
+        let scrollView = app.scrollViews.firstMatch
+        XCTAssertTrue(scrollView.waitForExistence(timeout: 5), "Hero list did not appear")
+        XCTAssertTrue(scrollView.staticTexts.matching(identifier: "heroGridItem").firstMatch.waitForExistence(timeout: 5))
+        let initialCount = scrollView.staticTexts.matching(identifier: "heroGridItem").count
+        for _ in 0..<5 {
+            scrollView.swipeUp()
         }
+        let finalCount = scrollView.staticTexts.matching(identifier: "heroGridItem").count
+        XCTAssertTrue(finalCount > initialCount, "Expected more heroes to load after swiping.")
     }
 }

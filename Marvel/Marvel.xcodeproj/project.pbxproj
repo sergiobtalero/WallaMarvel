@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		292441D22D9A8F6700916A81 /* Domain in Frameworks */ = {isa = PBXBuildFile; productRef = 292441D12D9A8F6700916A81 /* Domain */; };
 		292441D42D9A8F6700916A81 /* Composition in Frameworks */ = {isa = PBXBuildFile; productRef = 292441D32D9A8F6700916A81 /* Composition */; };
+		298AF5E02D9AF29F00D56BBD /* Domain in Frameworks */ = {isa = PBXBuildFile; productRef = 298AF5DF2D9AF29F00D56BBD /* Domain */; };
 		29CA9CFB2D99B898005E473C /* Domain in Frameworks */ = {isa = PBXBuildFile; productRef = 29CA9CFA2D99B898005E473C /* Domain */; };
 		29CA9CFD2D99B8A8005E473C /* Composition in Frameworks */ = {isa = PBXBuildFile; productRef = 29CA9CFC2D99B8A8005E473C /* Composition */; };
 		29CA9D002D99B8CA005E473C /* Composition in Frameworks */ = {isa = PBXBuildFile; productRef = 29CA9CFF2D99B8CA005E473C /* Composition */; };
@@ -94,6 +95,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				298AF5E02D9AF29F00D56BBD /* Domain in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -200,6 +202,7 @@
 			);
 			name = MarvelUITests;
 			packageProductDependencies = (
+				298AF5DF2D9AF29F00D56BBD /* Domain */,
 			);
 			productName = MarvelUITests;
 			productReference = 29CA9CE62D99B87F005E473C /* MarvelUITests.xctest */;
@@ -640,6 +643,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 29CA9CFE2D99B8CA005E473C /* XCLocalSwiftPackageReference "../Packages/Composition" */;
 			productName = Composition;
+		};
+		298AF5DF2D9AF29F00D56BBD /* Domain */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 29CA9CF92D99B898005E473C /* XCLocalSwiftPackageReference "../Packages/Domain" */;
+			productName = Domain;
 		};
 		29CA9CFA2D99B898005E473C /* Domain */ = {
 			isa = XCSwiftPackageProductDependency;
