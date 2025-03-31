@@ -14,6 +14,7 @@ protocol HeroesListViewModelProtocol: ObservableObject {
     var navigationTitle: String { get }
     var heroes: [CharacterDataModel] { get set }
     var query: String { get set }
+    var isLoading: Bool { get }
     
     func loadFirstPage() async
     func loadNextPage() async
@@ -30,7 +31,7 @@ final class HeroesListViewModel {
     private var currentPage: Int = 1
     private var canLoadMore: Bool = true
     private var totalHeroes: Int = .min
-    private var isLoading: Bool = false
+    private(set) var isLoading: Bool = false
     
     @Published var heroes: [CharacterDataModel] = []
     @Published var query: String = ""
@@ -58,7 +59,7 @@ extension HeroesListViewModel: HeroesListViewModelProtocol {
     }
     
     @MainActor func loadNextPage() async {
-        guard !isLoading, canLoadMore else {
+        guard !isLoading && canLoadMore && query.isEmpty else {
             return
         }
         isLoading = true
