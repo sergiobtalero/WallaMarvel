@@ -12,16 +12,17 @@ import Foundation
 protocol HeroDetailPresenterProtocol: AnyObject {
     var ui: HeroDetailUI? { get set }
     var navigationTitle: String { get }
+    var hero: Hero { get }
     
     func loadDetails() async
 }
 
 protocol HeroDetailUI: AnyObject {
-    func update()
+    func update(imageURL: URL?, description: String?, showComics: Bool, showSeries: Bool)
 }
 
 final class HeroDetailPresenter {
-    private var hero: Hero
+    private(set) var hero: Hero
     
     var ui: HeroDetailUI?
     var navigationTitle: String { hero.name }
@@ -36,10 +37,13 @@ final class HeroDetailPresenter {
 }
 
 extension HeroDetailPresenter: HeroDetailPresenterProtocol {
-    func loadDetails() async {
+    @MainActor func loadDetails() async {
         if let details = try? await getHeroDetailsUseCase.execute(id: hero.id) {
             hero = details
-            ui?.update()
+            ui?.update(imageURL: hero.imageURL,
+                       description: hero.description != "" ? hero.description : nil,
+                       showComics: !hero.comics.isEmpty,
+                       showSeries: !hero.series.isEmpty)
         }
     }
 }

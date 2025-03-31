@@ -25,6 +25,7 @@ final class ListHeroesPresenter {
     private var currentPage: Int = 1
     private let getHeroesUseCase: GetHeroesUseCaseProtocol
     private var allHeroes: [Hero] = []
+    private var total: Int = .min
     private(set) var heroes: [Hero] = []
     
     init(getHeroesUseCase: GetHeroesUseCaseProtocol = ModuleFactory.makeGetHeroesUseCase()) {
@@ -39,6 +40,7 @@ extension ListHeroesPresenter: ListHeroesPresenterProtocol {
             allHeroes = container.results
             heroes = container.results
             currentPage += 1
+            total = max(total, container.total)
             ui?.update()
         }
     }
@@ -55,7 +57,7 @@ extension ListHeroesPresenter: ListHeroesPresenterProtocol {
     }
     
     @MainActor func loadNextPage() async {
-        guard !isLoading, !isFiltering else { return }
+        guard !isLoading && !isFiltering && heroes.count < total else { return }
         isLoading = true
         
         defer {
