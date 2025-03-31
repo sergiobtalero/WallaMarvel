@@ -6,6 +6,19 @@ final class ListHeroesView: UIView {
         static let estimatedRowHeight: CGFloat = 120
     }
     
+    let searchBar: UISearchBar = {
+        let searchBar = UISearchBar()
+        searchBar.translatesAutoresizingMaskIntoConstraints = false
+        searchBar.placeholder = "Type character name to search"
+        searchBar.showsCancelButton = true
+        searchBar.sizeToFit()
+        if let textField = searchBar.value(forKey: "searchField") as? UITextField {
+            textField.returnKeyType = .done
+            textField.enablesReturnKeyAutomatically = true
+        }
+        return searchBar
+    }()
+    
     let heroesTableView: UITableView = {
         let tableView = UITableView()
         tableView.register(ListHeroesTableViewCell.self, forCellReuseIdentifier: "ListHeroesTableViewCell")
@@ -23,21 +36,28 @@ final class ListHeroesView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    private func setup() {
+}
+
+// MARK: - Private
+private extension ListHeroesView {
+    func setup() {
         addSubviews()
         addContraints()
     }
     
-    private func addSubviews() {
+    func addSubviews() {
+        addSubview(searchBar)
         addSubview(heroesTableView)
     }
     
-    private func addContraints() {
+    func addContraints() {
         NSLayoutConstraint.activate([
+            searchBar.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
+            searchBar.leadingAnchor.constraint(equalTo: leadingAnchor),
+            searchBar.trailingAnchor.constraint(equalTo: trailingAnchor),
+            heroesTableView.topAnchor.constraint(equalTo: searchBar.bottomAnchor),
             heroesTableView.leadingAnchor.constraint(equalTo: leadingAnchor),
             heroesTableView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            heroesTableView.topAnchor.constraint(equalTo: topAnchor),
             heroesTableView.bottomAnchor.constraint(equalTo: bottomAnchor),
         ])
     }
