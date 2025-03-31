@@ -30,7 +30,7 @@ struct MarvelRepositoryTests {
         
         let heroes = try await sut.getHeroes(page: 1)
         
-        #expect(!heroes.characters.isEmpty)
+        #expect(!heroes.results.isEmpty)
     }
     
     @Test func getErrorOnBadServerReponse() async throws {
@@ -44,6 +44,32 @@ struct MarvelRepositoryTests {
         } catch {
             throw TestError(message: "Unexpected Error. Expected URLError.")
         }
+    }
+    
+    @Test func testGetComicsOfHero() async throws {
+        guard let url = Bundle.module.url(forResource: "Comics", withExtension: "json") else {
+            throw TestError(message: "Could not find Characters.json in test bundle")
+        }
+        
+        let sut = makeSUT(
+            data: try Data(contentsOf: url),
+            response: HTTPURLResponse(url: URL(string: "https://www.test.com")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        )
+        let comics = try await sut.getComicsOfHero(id: 1)
+        #expect(comics.count == 12)
+    }
+    
+    @Test func testGetSeriesOfHero() async throws {
+        guard let url = Bundle.module.url(forResource: "Series", withExtension: "json") else {
+            throw TestError(message: "Could not find Characters.json in test bundle")
+        }
+        
+        let sut = makeSUT(
+            data: try Data(contentsOf: url),
+            response: HTTPURLResponse(url: URL(string: "https://www.test.com")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        )
+        let comics = try await sut.getSeriesOfHero(id: 1)
+        #expect(comics.count == 3)
     }
 }
 
