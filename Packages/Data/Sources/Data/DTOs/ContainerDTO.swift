@@ -9,7 +9,7 @@ import Domain
 import Foundation
 
 protocol DTOConvertible: Decodable {
-    associatedtype DomainModel
+    associatedtype DomainModel: Sendable
     func toDomainModel() -> DomainModel
 }
 
@@ -34,5 +34,10 @@ struct ContainerDTO<T: DTOConvertible>: Decodable {
         self.offset = try data.decode(Int.self, forKey: .offset)
         self.total = try data.decode(Int.self, forKey: .total)
         self.results = try data.decode([T].self, forKey: .results)
+    }
+    
+    func toDomain() -> DataContainer<T.DomainModel> {
+        let models = results.map { $0.toDomainModel() }
+        return DataContainer(count: count, limit: limit, offset: offset, total: total, results: models)
     }
 }

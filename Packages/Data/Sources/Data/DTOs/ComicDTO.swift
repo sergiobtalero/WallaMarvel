@@ -23,7 +23,7 @@ struct ComicDTO: DTOConvertible {
             description: description,
             pageCount: pageCount,
             thumbnail: thumbnail.toDomainModel(),
-            images: images.map { $0.toDomainModel()
-            })
+            images: images.map { $0.toDomainModel()}
+        )
     }
 }

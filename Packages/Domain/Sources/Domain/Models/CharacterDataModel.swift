@@ -12,6 +12,7 @@ public struct CharacterDataModel: Identifiable, Equatable, Sendable, Hashable {
     public let name: String
     public let description: String
     public let thumbnail: Thumbnail
+    public var comics: [Comic] = []
     
     public var imageURL: URL? {
         let path = thumbnail.path + "." + thumbnail.extension
@@ -24,11 +25,4 @@ public struct CharacterDataModel: Identifiable, Equatable, Sendable, Hashable {
         self.description = description
         self.thumbnail = thumbnail
     }
-    
-//    public static func == (lhs: CharacterDataModel, rhs: CharacterDataModel) -> Bool {
-//        lhs.id == rhs.id &&
-//        lhs.name == rhs.name &&
-//        lhs.description == rhs.description &&
-//        lhs.thumbnail == rhs.thumbnail
-//    }
 }

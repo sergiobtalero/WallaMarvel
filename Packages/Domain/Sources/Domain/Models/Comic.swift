@@ -5,7 +5,7 @@
 //  Created by Sergio David Bravo Talero on 31/3/25.
 //
 
-public struct Comic {
+public struct Comic: Sendable, Equatable, Hashable {
     public let id: Int
     public let title: String
     public let description: String?

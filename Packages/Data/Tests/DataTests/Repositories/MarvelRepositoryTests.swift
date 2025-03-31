@@ -30,7 +30,7 @@ struct MarvelRepositoryTests {
         
         let heroes = try await sut.getHeroes(page: 1)
         
-        #expect(!heroes.characters.isEmpty)
+        #expect(!heroes.results.isEmpty)
     }
     
     @Test func getErrorOnBadServerReponse() async throws {

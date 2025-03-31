@@ -1,5 +1,5 @@
 //
-//  CharacterDataModelDTO.swift
+//  HeroDTO.swift
 //  Data
 //
 //  Created by Sergio David Bravo Talero on 30/3/25.
@@ -7,7 +7,7 @@
 
 import Domain
 
-struct CharacterDataModelDTO: Decodable {
+struct HeroDTO: DTOConvertible {
     let id: Int
     let name: String
     let description: String

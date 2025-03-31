@@ -7,18 +7,18 @@
 
 import Foundation
 
-public struct CharacterDataContainer: Sendable {
+public struct DataContainer<T: Sendable>: Sendable {
     public let count: Int
     public let limit: Int
     public let offset: Int
     public let total: Int
-    public let characters: [CharacterDataModel]
+    public let results: [T]
     
-    public init(count: Int, limit: Int, offset: Int, total: Int, characters: [CharacterDataModel]) {
+    public init(count: Int, limit: Int, offset: Int, total: Int, results: [T]) {
         self.count = count
         self.limit = limit
         self.offset = offset
         self.total = total
-        self.characters = characters
+        self.results = results
     }
 }

@@ -57,7 +57,7 @@ extension HeroesListViewModel: HeroesListViewModelProtocol {
         
         if let container = try? await getHeroesUseCase.execute(page: currentPage) {
             totalHeroes = max(container.total, totalHeroes)
-            updateHeroes(container.characters)
+            updateHeroes(container.results)
         }
     }
     
@@ -72,7 +72,7 @@ extension HeroesListViewModel: HeroesListViewModelProtocol {
         }
         
         if let container = try? await getHeroesUseCase.execute(page: currentPage) {
-            updateHeroes(container.characters)
+            updateHeroes(container.results)
         }
     }
     

@@ -44,17 +44,17 @@ private extension MarvelRepository {
 
 // MARK: - MarvelRepositoryProtocol
 extension MarvelRepository: MarvelRepositoryProtocol {
-    public func getHeroes(page: Int) async throws -> CharacterDataContainer {
+    public func getHeroes(page: Int) async throws -> DataContainer<CharacterDataModel> {
         let responseLimit = 20
         let url = try buildURL(for: .heroes(page: page, limit: responseLimit))
-        let entities: CharacterDataContainerDTO = try await networkManager.fetch(from: url)
-        return entities.toDomainModel()
+        let entities: ContainerDTO<HeroDTO> = try await networkManager.fetch(from: url)
+        return entities.toDomain()
     }
     
     public func getDetailsOfHero(id: Int) async throws -> CharacterDataModel {
         let url = try buildURL(for: .heroDetail(id: id))
-        let entities: CharacterDataContainerDTO = try await networkManager.fetch(from: url)
-        if let details = entities.characters.first?.toDomainModel() {
+        let entities: ContainerDTO<HeroDTO> = try await networkManager.fetch(from: url)
+        if let details = entities.results.first?.toDomainModel() {
             return details
         } else {
             throw URLError(.badServerResponse)
@@ -69,7 +69,7 @@ extension MarvelRepository: MarvelRepositoryProtocol {
     
     public func getSeriesOfHero(id: Int) async throws {
         let url = try buildURL(for: .series(id: id))
-        let entities: CharacterDataContainerDTO = try await networkManager.fetch(from: url)
+        let entities: ContainerDTO<HeroDTO> = try await networkManager.fetch(from: url)
     }
 }
 
