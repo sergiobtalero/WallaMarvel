@@ -6,12 +6,13 @@
 //
 
 import Domain
+import Foundation
 
 struct ThumbnailDTO: Decodable {
     let path: String
     let `extension`: String
     
-    func toDomainModel() -> Thumbnail {
-        return Thumbnail(path: path, extension: `extension`)
+    var url: URL? {
+        URL(string: "\(path).\(`extension`)")
     }
 }

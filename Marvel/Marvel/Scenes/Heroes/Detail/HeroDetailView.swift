@@ -19,7 +19,7 @@ struct HeroDetailView<VM: HeroDetailViewModelProtocol>: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading){
-                if let imageURL = viewModel.hero.imageURL {
+                if let imageURL = viewModel.hero.thumbnailURL {
                     HStack {
                         KFImage(imageURL)
                             .resizable()

@@ -10,22 +10,41 @@ import Testing
 @testable import Marvel
 
 struct HeroDetailViewModelTests {
-
     @Test func testHeroDetailViewModel() async {
-        let thumbnail = Thumbnail(path: "https://example", extension: "jpg")
-        let originalHero = Character(id: 1, name: "Hulk", description: "", thumbnail: thumbnail)
+        let originalHero = Character(id: 1, name: "Hulk", description: "", thumbnailURL: nil)
         var updatedHero = Character(
             id: 1,
             name: "Hulk",
             description: "The green man",
-            thumbnail: thumbnail
+            thumbnailURL: nil
         )
         let comics: [Comic] = [
-            Comic(id: 1, title: "Hulk 1st comic", description: "First comic", pageCount: 20, thumbnail: thumbnail, images: [thumbnail])
+            Comic(
+                id: 1,
+                title: "Hulk 1st comic",
+                description: "First comic",
+                pageCount: 20,
+                thumbnailURL: nil,
+                images: []
+            )
         ]
         let series: [Series] = [
-            Series(id: 1, title: "Hulk series", description: "First series", startYear: 2000, endYear: 2010, thumbnail: thumbnail),
-            Series(id: 2, title: "Hulk series 2", description: "Second series", startYear: 2000, endYear: 2010, thumbnail: thumbnail)
+            Series(
+                id: 1,
+                title: "Hulk series",
+                description: "First series",
+                startYear: 2000,
+                endYear: 2010,
+                thumbnailURL: nil
+            ),
+            Series(
+                id: 2,
+                title: "Hulk series 2",
+                description: "Second series",
+                startYear: 2000,
+                endYear: 2010,
+                thumbnailURL: nil
+            )
         ]
         updatedHero.comics = comics
         updatedHero.series = series

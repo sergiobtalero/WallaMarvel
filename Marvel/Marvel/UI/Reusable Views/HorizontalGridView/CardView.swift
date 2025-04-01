@@ -14,7 +14,7 @@ struct CardView<T: HasThumbnailImage & HasTitle>: View {
     
     var body: some View {
         VStack(alignment: .center) {
-            KFImage(element.thumbailImage)
+            KFImage(element.thumbnailURL)
                 .resizable()
                 .aspectRatio(1, contentMode: .fill)
                 .frame(height: 140)

@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol HasThumbnailImage {
-    var thumbailImage: URL? { get }
+    var thumbnailURL: URL? { get }
 }
 
 public struct Comic: Identifiable, Sendable, Equatable, Hashable, HasThumbnailImage, HasTitle {
@@ -16,19 +16,15 @@ public struct Comic: Identifiable, Sendable, Equatable, Hashable, HasThumbnailIm
     public let title: String
     public let description: String?
     public let pageCount: Int
-    public let thumbnail: Thumbnail
-    public let images: [Thumbnail]
+    public let thumbnailURL: URL?
+    public let images: [URL]
     
-    public var thumbailImage: URL? {
-        thumbnail.imageURL
-    }
-    
-    public init(id: Int, title: String, description: String?, pageCount: Int, thumbnail: Thumbnail, images: [Thumbnail]) {
+    public init(id: Int, title: String, description: String?, pageCount: Int, thumbnailURL: URL?, images: [URL]) {
         self.id = id
         self.title = title
         self.description = description
         self.pageCount = pageCount
-        self.thumbnail = thumbnail
+        self.thumbnailURL = thumbnailURL
         self.images = images
     }
 }

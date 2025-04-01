@@ -6,6 +6,7 @@
 //
 
 import Domain
+import Foundation
 
 struct ComicDTO: DTOConvertible {
     let id: Int
@@ -22,8 +23,8 @@ struct ComicDTO: DTOConvertible {
             title: title,
             description: description,
             pageCount: pageCount,
-            thumbnail: thumbnail.toDomainModel(),
-            images: images.map { $0.toDomainModel()}
+            thumbnailURL: thumbnail.url,
+            images: images.compactMap { $0.url }
         )
     }
 }

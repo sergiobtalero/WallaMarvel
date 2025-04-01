@@ -11,19 +11,14 @@ public struct Character: Identifiable, Equatable, Sendable, Hashable {
     public let id: Int
     public let name: String
     public let description: String
-    public let thumbnail: Thumbnail
+    public let thumbnailURL: URL?
     public var comics: [Comic] = []
     public var series: [Series] = []
     
-    public var imageURL: URL? {
-        let path = thumbnail.path + "." + thumbnail.extension
-        return URL(string: path)
-    }
-    
-    public init(id: Int, name: String, description: String, thumbnail: Thumbnail) {
+    public init(id: Int, name: String, description: String, thumbnailURL: URL?) {
         self.id = id
         self.name = name
         self.description = description
-        self.thumbnail = thumbnail
+        self.thumbnailURL = thumbnailURL
     }
 }

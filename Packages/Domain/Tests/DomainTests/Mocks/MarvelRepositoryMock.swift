@@ -15,26 +15,24 @@ final class MarvelRepositoryMock: MarvelRepositoryProtocol {
         if let error = error {
             throw error
         }
-        let characters = [Character(id: 0, name: "test", description: "desciption", thumbnail: Thumbnail(path: "image", extension: "jpg"))]
+        let characters = [Character(id: 0, name: "test", description: "desciption", thumbnailURL: nil)]
         return DataContainer<Character>(count: 100, limit: 100, offset: 0, total: 100, results: characters)
     }
     
     func getDetailsOfHero(id: Int) async throws -> Character {
-        return Character(id: 0, name: "test", description: "desciption", thumbnail: Thumbnail(path: "image", extension: "jpg"))
+        return Character(id: 0, name: "test", description: "description", thumbnailURL: nil)
     }
     
     func getComicsOfHero(id: Int) async throws -> [Comic] {
-        let thumbnail = Thumbnail(path: "image", extension: "jpg")
         return [
-            Comic(id: 1, title: "Comic 1", description: "Description", pageCount: 100, thumbnail: thumbnail, images: [thumbnail]),
-            Comic(id: 2, title: "Comic 2", description: "Description", pageCount: 100, thumbnail: thumbnail, images: [thumbnail])
+            Comic(id: 1, title: "Comic 1", description: "Description", pageCount: 100, thumbnailURL: nil, images: [URL(string: "www.test.com")!]),
+            Comic(id: 2, title: "Comic 2", description: "Description", pageCount: 100, thumbnailURL: nil, images: [URL(string: "www.test.com")!])
         ]
     }
     
     func getSeriesOfHero(id: Int) async throws -> [Series] {
-        let thumbnail = Thumbnail(path: "image", extension: "jpg")
         return [
-            Series(id: 1, title: "Series 1", description: "Description", startYear: 2000, endYear: 2010, thumbnail: thumbnail)
+            Series(id: 1, title: "Series 1", description: "Description", startYear: 2000, endYear: 2010, thumbnailURL: URL(string: "www.test.com")!)
         ]
     }
 }

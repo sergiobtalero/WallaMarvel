@@ -24,7 +24,7 @@ struct SeriesDTO: DTOConvertible {
             description: description,
             startYear: startYear,
             endYear: endYear,
-            thumbnail: thumbnail?.toDomainModel()
+            thumbnailURL: thumbnail?.url
         )
     }
 }

@@ -18,7 +18,7 @@ struct CharacterDTO: DTOConvertible {
             id: id,
             name: name,
             description: description,
-            thumbnail: thumbnail.toDomainModel()
+            thumbnailURL: thumbnail.url
         )
     }
 }

@@ -22,7 +22,7 @@ struct CharacterCardView: View {
     
     var body: some View {
         ZStack(alignment: .bottom) {
-            KFImage(hero.imageURL)
+            KFImage(hero.thumbnailURL)
                 .resizable()
             
             Text(hero.name)

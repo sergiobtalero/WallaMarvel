@@ -17,16 +17,14 @@ public struct Series: Identifiable, Sendable, Equatable, Hashable, HasThumbnailI
     public let description: String?
     public let startYear: Int
     public let endYear: Int
-    public let thumbnail: Thumbnail?
+    public let thumbnailURL: URL?
     
-    public var thumbailImage: URL? { thumbnail?.imageURL }
-    
-    public init(id: Int, title: String, description: String?, startYear: Int, endYear: Int, thumbnail: Thumbnail?) {
+    public init(id: Int, title: String, description: String?, startYear: Int, endYear: Int, thumbnailURL: URL?) {
         self.id = id
         self.title = title
         self.description = description
         self.startYear = startYear
         self.endYear = endYear
-        self.thumbnail = thumbnail
+        self.thumbnailURL = thumbnailURL
     }
 }

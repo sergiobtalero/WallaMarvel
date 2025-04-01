@@ -7,7 +7,7 @@
 
 import Domain
 
-final class GetHeroDetailsUseCaseMock: GetHeroDetailsUseCaseProtocol {
+final class GetHeroDetailsUseCaseMock: GetCharacterDetailsUseCaseProtocol {
     var heroToReturn: Character?
     
     func execute(id: Int) async throws -> Character {
