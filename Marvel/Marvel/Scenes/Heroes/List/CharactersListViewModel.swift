@@ -23,6 +23,7 @@ protocol CharactersListViewModelProtocol: ObservableObject {
 
 enum CharactersListViewState: Equatable {
     case idle
+    case empty
     case loading
     case loaded(characters: [Character])
 }
@@ -79,6 +80,8 @@ extension CharactersListViewModel: CharactersListViewModelProtocol {
         if let container = try? await getHeroesUseCase.execute(page: 1) {
             totalHeroes = max(container.total, totalHeroes)
             updateHeroes(container.results)
+        } else {
+            state = .empty
         }
     }
     

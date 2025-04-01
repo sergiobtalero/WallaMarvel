@@ -34,21 +34,29 @@ struct CharactersListView<VM: CharactersListViewModelProtocol>: View {
             switch viewModel.state {
             case .idle:
                 EmptyView()
+            case .empty:
+                ContentUnavailableView("No characters to show", systemImage: "eye.slash")
             case .loading:
                 LoadingView()
             case .loaded(let characters):
-                ScrollView(showsIndicators: true) {
-                    LazyVGrid(columns: columns, alignment: .leading) {
-                        
-                        ForEach(characters) { character in
-                            CharacterCardView(hero: character)
-                                .onAppear {
-                                    viewModel.onCharacterAppear(character)
+                Group {
+                    if characters.isEmpty {
+                        ContentUnavailableView.search
+                    } else {
+                        ScrollView(showsIndicators: true) {
+                            LazyVGrid(columns: columns, alignment: .leading) {
+                                
+                                ForEach(characters) { character in
+                                    CharacterCardView(hero: character)
+                                        .onAppear {
+                                            viewModel.onCharacterAppear(character)
+                                        }
                                 }
+                            }
+                            .padding(.horizontal)
+                            .animation(.linear, value: viewModel.state)
                         }
                     }
-                    .padding(.horizontal)
-                    .animation(.linear, value: viewModel.state)
                 }
                 .searchable(
                     text: $viewModel.searchText,
@@ -71,6 +79,7 @@ struct CharactersListView<VM: CharactersListViewModelProtocol>: View {
         .onViewDidLoad {
             Task { await viewModel.loadFirstPage() }
         }
+        
         //        .onChange(of: viewModel.heroSelected, { _, hero in
         //            if let hero {
         //                coordinator.goToHeroDetail(hero)

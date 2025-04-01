@@ -63,6 +63,19 @@ struct HeroesListViewModelTests {
         #expect(characters.count == 15)
     }
     
+    @Test
+    func loadFirstPage_WhenFails_UpdatesStateToEmpty() async throws {
+        let getHeroesUseCaseMock = GetCharactersUseCaseMock()
+        getHeroesUseCaseMock.error = TestError(description: "Bad server response")
+        let sut = CharactersListViewModel(getHeroesUseCase: getHeroesUseCaseMock)
+        
+        await sut.loadFirstPage()
+        
+        guard case .empty = sut.state else {
+            throw TestError(description: "Invalid state.")
+        }
+    }
+    
 //    @Test
 //    func didSelectHero_setsSelectedHero() {
 //        let getHeroesUseCaseMock = GetHeroesUseCaseMock()
