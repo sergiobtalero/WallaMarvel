@@ -2,9 +2,7 @@ import Foundation
 import UIKit
 
 final class ListHeroesView: UIView {
-    enum Constant {
-        static let estimatedRowHeight: CGFloat = 120
-    }
+    
     
     let searchBar: UISearchBar = {
         let searchBar = UISearchBar()
@@ -36,6 +34,13 @@ final class ListHeroesView: UIView {
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+}
+
+// MARK: - Constants
+private extension ListHeroesView {
+    enum Constant {
+        static let estimatedRowHeight: CGFloat = 120
     }
 }
 
