@@ -1,5 +1,5 @@
 //
-//  HeroesListView.swift
+//  CharactersListView.swift
 //  Marvel
 //
 //  Created by Sergio David Bravo Talero on 30/3/25.
@@ -8,7 +8,7 @@
 import Domain
 import SwiftUI
 
-struct HeroesListView<VM: HeroesListViewModelProtocol>: View {
+struct CharactersListView<VM: CharactersListViewModelProtocol>: View {
     enum GridLayout: Int {
         case oneColumn
         case twoColumns
@@ -16,7 +16,6 @@ struct HeroesListView<VM: HeroesListViewModelProtocol>: View {
     
     @StateObject private var viewModel: VM
     @EnvironmentObject private var coordinator: AppCoordinator
-    //    @State private var hasTriggeredPagination = false
     @State private var gridLayout: GridLayout = .twoColumns
     @State private var columns: [GridItem] = [GridItem(.flexible()), GridItem(.flexible())]
     
@@ -86,18 +85,7 @@ struct HeroesListView<VM: HeroesListViewModelProtocol>: View {
 }
 
 // MARK: - Private
-private extension HeroesListView {
-    func checkIfShouldLoadNextPage(currentIndex: Int) async {
-        //        guard !viewModel.isLoading, !hasTriggeredPagination else { return }
-        //
-        //        let thresholdIndex = Int(Double(viewModel.heroes.count) * 0.9)
-        //        if currentIndex >= thresholdIndex {
-        //            hasTriggeredPagination = true
-        //            await viewModel.loadNextPage()
-        //            hasTriggeredPagination = false
-        //        }
-    }
-    
+private extension CharactersListView {
     func toggleGridLayout() {
         gridLayout = gridLayout == .oneColumn ? .twoColumns : .oneColumn
         
@@ -110,7 +98,7 @@ private extension HeroesListView {
 #Preview {
     @Previewable @State var coordinator = AppCoordinator()
     NavigationStack{
-        HeroesListView(viewModel: HeroesListViewModel())
+        CharactersListView(viewModel: CharactersListViewModel())
             .navigationDestination(for: Route.self) { route in
                 switch route {
                 case .detail(let id):

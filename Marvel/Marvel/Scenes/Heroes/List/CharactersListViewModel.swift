@@ -1,5 +1,5 @@
 //
-//  HeroesListViewModel.swift
+//  CharactersListViewModel.swift
 //  Marvel
 //
 //  Created by Sergio David Bravo Talero on 30/3/25.
@@ -10,26 +10,25 @@ import Composition
 import Domain
 import Foundation
 
-protocol HeroesListViewModelProtocol: ObservableObject {
+protocol CharactersListViewModelProtocol: ObservableObject {
     var navigationTitle: String { get }
     var heroSelected: Character? { get set }
     var searchText: String { get set }
-    var state: HeroesListViewState { get }
+    var state: CharactersListViewState { get }
     
     func loadFirstPage() async
-    func loadNextPage() async
     func didSelectHero(_ hero: Character?)
     func onCharacterAppear(_ character: Character)
 }
 
-enum HeroesListViewState: Equatable {
+enum CharactersListViewState: Equatable {
     case idle
     case loading
     case loaded(characters: [Character])
 }
 
-final class HeroesListViewModel {
-    @Published private(set) var state: HeroesListViewState = .idle
+final class CharactersListViewModel {
+    @Published private(set) var state: CharactersListViewState = .idle
     @Published var heroSelected: Character?
     @Published var searchText: String = ""
     
@@ -42,6 +41,14 @@ final class HeroesListViewModel {
     private var currentPage = 1
     private var totalHeroes: Int = .min
     private var isLoadingNextPage = false
+    private var currentTask: Task<Void, Never>? {
+        willSet {
+            if let currentTask {
+                if currentTask.isCancelled { return }
+                currentTask.cancel()
+            }
+        }
+    }
     
     var navigationTitle: String {
         "Heroes"
@@ -64,8 +71,8 @@ final class HeroesListViewModel {
     }
 }
 
-// MARK: - HeroesListViewModelProtocol
-extension HeroesListViewModel: HeroesListViewModelProtocol {
+// MARK: - CharactersListViewModelProtocol
+extension CharactersListViewModel: CharactersListViewModelProtocol {
     @MainActor func loadFirstPage() async {
         state = .loading
         
@@ -75,28 +82,40 @@ extension HeroesListViewModel: HeroesListViewModelProtocol {
         }
     }
     
-    @MainActor func loadNextPage() async {
-        guard canLoadNextPage else { return }
-        
-        isLoadingNextPage = true
-        defer { isLoadingNextPage = false }
-        
-        if let container = try? await getHeroesUseCase.execute(page: currentPage) {
-            updateHeroes(container.results)
-        }
-    }
-    
     func didSelectHero(_ hero: Character?) {
         heroSelected = hero
     }
     
     func onCharacterAppear(_ character: Character) {
+        guard canLoadNextPage else {
+            return
+        }
         
+        guard
+            case .loaded(let characters) = state,
+            let index = characters.firstIndex(where: { $0.id == character.id }) else {
+            return
+        }
+        
+        let threshold = 5 // Launch n characters before last one
+        let thresholdIndex = characters.index(characters.endIndex, offsetBy: -threshold)
+        
+        if index != thresholdIndex {
+            return
+        }
+        isLoadingNextPage = true
+        currentTask = Task {
+            async let container = getHeroesUseCase.execute(page: currentPage)
+            if let container = try? await container {
+                await updateHeroes(container.results)
+            }
+            isLoadingNextPage = false
+        }
     }
 }
 
 // MARK: - Bindings
-private extension HeroesListViewModel {
+private extension CharactersListViewModel {
     func setupBindings() {
         bindSearchText()
     }
@@ -118,8 +137,8 @@ private extension HeroesListViewModel {
 }
 
 // MARK: - Private
-private extension HeroesListViewModel {
-    func updateHeroes(_ heroes: [Character]) {
+private extension CharactersListViewModel {
+    @MainActor func updateHeroes(_ heroes: [Character]) {
         var loadedHeroes = heroesSubject.value
         loadedHeroes.append(contentsOf: heroes)
         

@@ -1,5 +1,5 @@
 //
-//  GetHeroesUseCaseMock.swift
+//  GetCharactersUseCaseMock.swift
 //  MarvelTests
 //
 //  Created by Sergio David Bravo Talero on 31/3/25.
@@ -8,7 +8,7 @@
 import Domain
 import Foundation
 
-final class GetHeroesUseCaseMock: GetCharactersUseCaseProtocol {
+final class GetCharactersUseCaseMock: GetCharactersUseCaseProtocol {
     var response: DataContainer<Character>
     var nextResponse: DataContainer<Character>?
     var executeCallCount = 0
@@ -18,11 +18,7 @@ final class GetHeroesUseCaseMock: GetCharactersUseCaseProtocol {
     }
     
     convenience init() {
-        let characters = [
-            Character(id: 1, name: "Spider Man", description: "Spider Man", thumbnailURL: nil),
-            Character(id: 2, name: "Hulk", description: "Hulk", thumbnailURL: nil)
-        ]
-        self.init(response: DataContainer(count: 10, limit: 100, offset: 0, total: 100, results: characters))
+        self.init(response: DataContainer(count: 10, limit: 100, offset: 0, total: 100, results: marvelCharacters))
     }
 
     func execute(page: Int) async throws -> DataContainer<Character> {

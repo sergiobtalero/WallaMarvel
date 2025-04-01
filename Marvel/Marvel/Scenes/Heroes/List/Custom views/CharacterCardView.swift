@@ -24,6 +24,9 @@ struct CharacterCardView: View {
         ZStack(alignment: .bottom) {
             KFImage(hero.thumbnailURL)
                 .resizable()
+                .placeholder {
+                    Color(.accent)
+                }
             
             Text(hero.name)
                 .padding(Constant.defaultPadding)

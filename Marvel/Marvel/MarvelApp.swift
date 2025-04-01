@@ -28,7 +28,7 @@ struct MarvelApp: App {
     var body: some Scene {
         WindowGroup {
             NavigationStack(path: $coordinator.routes) {
-                HeroesListView(viewModel: HeroesListViewModel())
+                CharactersListView(viewModel: CharactersListViewModel())
                     .navigationDestination(for: Route.self) { route in
                         switch route {
                         case .detail(let hero):

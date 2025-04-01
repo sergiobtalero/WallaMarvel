@@ -9,64 +9,60 @@ import Domain
 import Testing
 @testable import Marvel
 
-struct TestError: Error {
-    let description: String
-}
-
 struct HeroesListViewModelTests {
     @Test
-    func loadFirstPage_WhenSucceeds_SetsLoadedStateWithCharacters() async throws {
-        let getHeroesUseCaseMock = GetHeroesUseCaseMock()
-        let sut = HeroesListViewModel(getHeroesUseCase: getHeroesUseCaseMock)
+    func loadFirstPage_WhenSucceeds_SetsStateWithCharacters() async throws {
+        let getHeroesUseCaseMock = GetCharactersUseCaseMock()
+        let sut = CharactersListViewModel(getHeroesUseCase: getHeroesUseCaseMock)
         
         await sut.loadFirstPage()
         
         guard case .loaded(let characters) = sut.state else {
             throw TestError(description: "Invalid state.")
         }
-        #expect(characters.count == 2)
-        #expect(characters.first?.name == "Spider Man")
+        #expect(characters.count == 10)
     }
     
     @Test
-    func query_filtersResults() async throws {
-        let getHeroesUseCaseMock = GetHeroesUseCaseMock()
-        let sut = HeroesListViewModel(getHeroesUseCase: getHeroesUseCaseMock)
+    func searchText_WhenChanges_AndValuesFound_UpdatesViewStateWithMatches() async throws {
+        let getHeroesUseCaseMock = GetCharactersUseCaseMock()
+        let sut = CharactersListViewModel(getHeroesUseCase: getHeroesUseCaseMock)
         await sut.loadFirstPage()
         
-        sut.searchText = "Spider"
+        guard case .loaded(let initialCharacters) = sut.state else {
+            throw TestError(description: "Invalid state.")
+        }
+        #expect(initialCharacters.count == 10)
         
-        guard case .loaded(let characters) = sut.state else {
+        sut.searchText = "Star"
+        
+        guard case .loaded(let filteredCharacters) = sut.state else {
             throw TestError(description: "Invalid state.")
         }
         
-        #expect(characters.count == 1)
-        #expect(characters.first?.name == "Spider Man")
+        #expect(filteredCharacters.count == 1)
     }
     
-//    @Test
-//    func loadNextPage_appendsHeroes() async throws {
-//        let initialCharacters = [
-//            Hero(id: 1, name: "Spider Man", description: "Spider Man", thumbnail: Thumbnail(path: "path", extension: "extension"))
-//        ]
-//        let response = DataContainer<Hero>(count: 100, limit: 100, offset: 0, total: 100, results: initialCharacters)
-//        let nextCharacters = [
-//            Hero(id: 2, name: "Hulk", description: "Hulk", thumbnail: Thumbnail(path: "path", extension: "extension"))
-//        ]
-//        let nextResponse = DataContainer<Hero>(count: 100, limit: 100, offset: 0, total: 100, results: nextCharacters)
-//        
-//        let getHeroesUseCaseMock = GetHeroesUseCaseMock(response: response)
-//        let viewModel = HeroesListViewModel(getHeroesUseCase: getHeroesUseCaseMock)
-//        
-//        await viewModel.loadFirstPage()
-//        
-//        getHeroesUseCaseMock.nextResponse = nextResponse
-//        await viewModel.loadNextPage()
-//        
-//        #expect(viewModel.heroes.count == 2)
-//        #expect(viewModel.heroes.last?.name == "Hulk")
-//    }
-//    
+    @Test
+    func onCharacterAppearCalled_WhenThresholdIsMet_UpdatesViewStateWithCharactersOfNewPage() async throws {
+        let getHeroesUseCaseMock = GetCharactersUseCaseMock()
+        let sut = CharactersListViewModel(getHeroesUseCase: getHeroesUseCaseMock)
+        
+        await sut.loadFirstPage()
+        
+        let nextResponse = DataContainer<Character>(count: 100, limit: 100, offset: 0, total: 100, results: moreMarvelCharacters)
+        getHeroesUseCaseMock.nextResponse = nextResponse
+        
+        for character in marvelCharacters {
+            sut.onCharacterAppear(character)
+        }
+        try await Task.sleep(nanoseconds: 1_000_000)
+        guard case .loaded(let characters) = sut.state else {
+            throw TestError(description: "Invalid state.")
+        }
+        #expect(characters.count == 15)
+    }
+    
 //    @Test
 //    func didSelectHero_setsSelectedHero() {
 //        let getHeroesUseCaseMock = GetHeroesUseCaseMock()
@@ -76,25 +72,5 @@ struct HeroesListViewModelTests {
 //        
 //        #expect(viewModel.heroSelected == hero)
 //    }
-//    
-
-//    
-//    @Test
-//    func loadNextPage_doesNotTrigger_whenQueryIsNotEmpty() async throws {
-//        let initialCharacters = [
-//            Hero(id: 1, name: "Spider Man", description: "Spider Man", thumbnail: Thumbnail(path: "path", extension: "extension"))
-//        ]
-//        let response = DataContainer<Hero>(count: 100, limit: 100, offset: 0, total: 100, results: initialCharacters)
-//        let getHeroesUseCaseMock = GetHeroesUseCaseMock(response: response)
-//        let viewModel = HeroesListViewModel(getHeroesUseCase: getHeroesUseCaseMock)
-//        
-//        await viewModel.loadFirstPage()
-//        
-//        viewModel.query = "Iron"
-//        try await Task.sleep(for: .milliseconds(100))
-//        
-//        await viewModel.loadNextPage()
-//        
-//        #expect(getHeroesUseCaseMock.executeCallCount == 1)
-//    }
+//
 }
