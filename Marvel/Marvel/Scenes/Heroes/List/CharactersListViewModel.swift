@@ -12,12 +12,10 @@ import Foundation
 
 protocol CharactersListViewModelProtocol: ObservableObject {
     var navigationTitle: String { get }
-    var heroSelected: Character? { get set }
     var searchText: String { get set }
     var state: CharactersListViewState { get }
     
     func loadFirstPage() async
-    func didSelectHero(_ hero: Character?)
     func onCharacterAppear(_ character: Character)
 }
 
@@ -30,7 +28,6 @@ enum CharactersListViewState: Equatable {
 
 final class CharactersListViewModel {
     @Published private(set) var state: CharactersListViewState = .idle
-    @Published var heroSelected: Character?
     @Published var searchText: String = ""
     
     private let getHeroesUseCase: GetCharactersUseCaseProtocol
@@ -83,10 +80,6 @@ extension CharactersListViewModel: CharactersListViewModelProtocol {
         } else {
             state = .empty
         }
-    }
-    
-    func didSelectHero(_ hero: Character?) {
-        heroSelected = hero
     }
     
     func onCharacterAppear(_ character: Character) {

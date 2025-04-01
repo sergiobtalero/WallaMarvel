@@ -24,7 +24,7 @@ struct CharactersListView<VM: CharactersListViewModelProtocol>: View {
     }
     
     // MARK: - Initializer
-    init(viewModel: VM) {
+    init(viewModel: VM = CharactersListViewModel()) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
     
@@ -50,6 +50,9 @@ struct CharactersListView<VM: CharactersListViewModelProtocol>: View {
                                     CharacterCardView(hero: character)
                                         .onAppear {
                                             viewModel.onCharacterAppear(character)
+                                        }
+                                        .onTapGesture {
+                                            coordinator.push(.characterDetail(character))
                                         }
                                 }
                             }
@@ -79,17 +82,6 @@ struct CharactersListView<VM: CharactersListViewModelProtocol>: View {
         .onViewDidLoad {
             Task { await viewModel.loadFirstPage() }
         }
-        
-        //        .onChange(of: viewModel.heroSelected, { _, hero in
-        //            if let hero {
-        //                coordinator.goToHeroDetail(hero)
-        //            }
-        //        })
-        //        .onChange(of: coordinator.routes, { _, newValue in
-        //            if newValue.isEmpty {
-        //                viewModel.didSelectHero(nil)
-        //            }
-        //        })
     }
 }
 
@@ -106,14 +98,7 @@ private extension CharactersListView {
 
 #Preview {
     @Previewable @State var coordinator = AppCoordinator()
-    NavigationStack{
-        CharactersListView(viewModel: CharactersListViewModel())
-            .navigationDestination(for: Route.self) { route in
-                switch route {
-                case .detail(let id):
-                    Text("Detail \(id)")
-                }
-            }
-    }
-    .environmentObject(coordinator)
+    
+    CharactersListView(viewModel: CharactersListViewModel())
+        .environmentObject(coordinator)
 }
