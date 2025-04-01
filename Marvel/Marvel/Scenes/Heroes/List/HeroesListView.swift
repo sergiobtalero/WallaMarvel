@@ -16,7 +16,7 @@ struct HeroesListView<VM: HeroesListViewModelProtocol>: View {
     
     @StateObject private var viewModel: VM
     @EnvironmentObject private var coordinator: AppCoordinator
-//    @State private var hasTriggeredPagination = false
+    //    @State private var hasTriggeredPagination = false
     @State private var gridLayout: GridLayout = .twoColumns
     @State private var columns: [GridItem] = [GridItem(.flexible()), GridItem(.flexible())]
     
@@ -63,36 +63,36 @@ struct HeroesListView<VM: HeroesListViewModelProtocol>: View {
                 } label: {
                     Image(systemName: leftNavigationBarImageName)
                 }
-
+                
             }
         }
         .onViewDidLoad {
             Task { await viewModel.loadFirstPage() }
         }
-//        .onChange(of: viewModel.heroSelected, { _, hero in
-//            if let hero {
-//                coordinator.goToHeroDetail(hero)
-//            }
-//        })
-//        .onChange(of: coordinator.routes, { _, newValue in
-//            if newValue.isEmpty {
-//                viewModel.didSelectHero(nil)
-//            }
-//        })
+        //        .onChange(of: viewModel.heroSelected, { _, hero in
+        //            if let hero {
+        //                coordinator.goToHeroDetail(hero)
+        //            }
+        //        })
+        //        .onChange(of: coordinator.routes, { _, newValue in
+        //            if newValue.isEmpty {
+        //                viewModel.didSelectHero(nil)
+        //            }
+        //        })
     }
 }
 
 // MARK: - Private
 private extension HeroesListView {
     func checkIfShouldLoadNextPage(currentIndex: Int) async {
-//        guard !viewModel.isLoading, !hasTriggeredPagination else { return }
-//        
-//        let thresholdIndex = Int(Double(viewModel.heroes.count) * 0.9)
-//        if currentIndex >= thresholdIndex {
-//            hasTriggeredPagination = true
-//            await viewModel.loadNextPage()
-//            hasTriggeredPagination = false
-//        }
+        //        guard !viewModel.isLoading, !hasTriggeredPagination else { return }
+        //
+        //        let thresholdIndex = Int(Double(viewModel.heroes.count) * 0.9)
+        //        if currentIndex >= thresholdIndex {
+        //            hasTriggeredPagination = true
+        //            await viewModel.loadNextPage()
+        //            hasTriggeredPagination = false
+        //        }
     }
     
     func toggleGridLayout() {
@@ -116,10 +116,4 @@ private extension HeroesListView {
             }
     }
     .environmentObject(coordinator)
-}
-
-struct LoadingView: View {
-    var body: some View {
-        Text("Loading")
-    }
 }
