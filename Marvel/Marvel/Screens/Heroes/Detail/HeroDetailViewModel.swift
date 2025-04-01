@@ -9,29 +9,29 @@ import Composition
 import Domain
 import Foundation
 
-protocol HeroDetailViewModelProtocol: ObservableObject {
+protocol CharacterDetailViewModelProtocol: ObservableObject {
     func loadDetails() async
-    var hero: Character { get set }
+    var character: Character { get set }
 }
 
-final class HeroDetailViewModel {
+final class CharacterDetailViewModel {
     private let getHeroDetailsUseCase: GetCharacterDetailsUseCaseProtocol
     
-    @Published var hero: Character
+    @Published var character: Character
     
-    init(hero: Character,
+    init(character: Character,
          getHeroDetailsUseCase: GetCharacterDetailsUseCaseProtocol = ModuleFactory.makeGetHeroDetailsUseCase()) {
-        self.hero = hero
+        self.character = character
         self.getHeroDetailsUseCase = getHeroDetailsUseCase
     }
 }
 
-// MARK: - HeroDetailViewModelProtocol
-extension HeroDetailViewModel: HeroDetailViewModelProtocol {
+// MARK: - CharacterDetailViewModelProtocol
+extension CharacterDetailViewModel: CharacterDetailViewModelProtocol {
     @MainActor func loadDetails() async {
-        if let updatedHero = try? await getHeroDetailsUseCase.execute(id: hero.id) {
+        if let character = try? await getHeroDetailsUseCase.execute(id: character.id) {
             objectWillChange.send()
-            self.hero = updatedHero
+            self.character = character
         }
     }
 }
