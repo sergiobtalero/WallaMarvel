@@ -12,35 +12,53 @@ import Foundation
 
 protocol HeroesListViewModelProtocol: ObservableObject {
     var navigationTitle: String { get }
-    var heroes: [Hero] { get set }
     var heroSelected: Hero? { get set }
-    var query: String { get set }
-    var isLoading: Bool { get }
+    var searchText: String { get set }
+    var state: HeroesListViewState { get }
     
     func loadFirstPage() async
     func loadNextPage() async
     func didSelectHero(_ hero: Hero?)
 }
 
+enum HeroesListViewState: Equatable {
+    case idle
+    case loading
+    case loaded(characters: [Hero])
+}
+
 final class HeroesListViewModel {
-    private let getHeroesUseCase: GetHeroesUseCaseProtocol
-    
-    private var subscriptions = Set<AnyCancellable>()
-    private let heroesSubject = CurrentValueSubject<[Hero], Never>([])
-    
-    var navigationTitle: String { "Heroes" }
-    
-    private var currentPage: Int = 1
-    private var canLoadMore: Bool = true
-    private var totalHeroes: Int = .min
-    private(set) var isLoading: Bool = false
-    
+    @Published private(set) var state: HeroesListViewState = .idle
     @Published var heroSelected: Hero?
-    @Published var heroes: [Hero] = []
-    @Published var query: String = ""
+    @Published var searchText: String = ""
     
-    init(getHeroesUseCase: GetHeroesUseCaseProtocol = ModuleFactory.makeGetHeroesUseCase()) {
+    private let getHeroesUseCase: GetHeroesUseCaseProtocol
+    private let nameFilter: HeroFilterStrategy
+    
+    private let heroesSubject = CurrentValueSubject<[Hero], Never>([])
+    private var subscriptions = Set<AnyCancellable>()
+    
+    private var currentPage = 1
+    private var totalHeroes: Int = .min
+    private var isLoadingNextPage = false
+    
+    var navigationTitle: String {
+        "Heroes"
+    }
+    
+    private var canLoadMorePages: Bool {
+        heroesSubject.value.count < totalHeroes
+    }
+    
+    private var canLoadNextPage: Bool {
+        !isLoadingNextPage && canLoadMorePages && searchText.isEmpty
+    }
+    
+    // MARK: - Initializer
+    init(getHeroesUseCase: GetHeroesUseCaseProtocol = ModuleFactory.makeGetHeroesUseCase(),
+         nameFilter: HeroFilterStrategy = NameFilter()) {
         self.getHeroesUseCase = getHeroesUseCase
+        self.nameFilter = nameFilter
         setupBindings()
     }
 }
@@ -48,28 +66,19 @@ final class HeroesListViewModel {
 // MARK: - HeroesListViewModelProtocol
 extension HeroesListViewModel: HeroesListViewModelProtocol {
     @MainActor func loadFirstPage() async {
-        isLoading = true
-        currentPage = 1
+        state = .loading
         
-        defer {
-            isLoading = false
-        }
-        
-        if let container = try? await getHeroesUseCase.execute(page: currentPage) {
+        if let container = try? await getHeroesUseCase.execute(page: 1) {
             totalHeroes = max(container.total, totalHeroes)
             updateHeroes(container.results)
         }
     }
     
     @MainActor func loadNextPage() async {
-        guard !isLoading && canLoadMore && query.isEmpty else {
-            return
-        }
-        isLoading = true
+        guard canLoadNextPage else { return }
         
-        defer {
-            isLoading = false
-        }
+        isLoadingNextPage = true
+        defer { isLoadingNextPage = false }
         
         if let container = try? await getHeroesUseCase.execute(page: currentPage) {
             updateHeroes(container.results)
@@ -84,18 +93,19 @@ extension HeroesListViewModel: HeroesListViewModelProtocol {
 // MARK: - Bindings
 private extension HeroesListViewModel {
     func setupBindings() {
-        bindQuery()
+        bindSearchText()
     }
     
-    func bindQuery() {
+    func bindSearchText() {
         heroesSubject
-            .combineLatest($query)
-            .sink { [weak self] allHeroes, query in
+            .combineLatest($searchText)
+            .sink { [weak self] allHeroes, searchText in
                 guard let self else { return }
-                if query.isEmpty {
-                    heroes = allHeroes
+                
+                if searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    state = .loaded(characters: allHeroes)
                 } else {
-                    heroes = allHeroes.filter { $0.name.localizedCaseInsensitiveContains(query) }
+                    state = .loaded(characters: nameFilter.filter(heroes: allHeroes, withSearchText: searchText))
                 }
             }
             .store(in: &subscriptions)
@@ -107,8 +117,9 @@ private extension HeroesListViewModel {
     func updateHeroes(_ heroes: [Hero]) {
         var loadedHeroes = heroesSubject.value
         loadedHeroes.append(contentsOf: heroes)
+        
         heroesSubject.send(loadedHeroes)
-        canLoadMore = loadedHeroes.count < totalHeroes
+        state = .loaded(characters: loadedHeroes)
         currentPage += 1
     }
 }

@@ -34,7 +34,7 @@ struct CharacterCardView: View {
                 .lineLimit(2)
                 .cornerRadius(Constant.cornerRadius)
                 .padding([.horizontal, .bottom], Constant.defaultPadding)
-                .shadow(radius: Constant.shadowRadius)
+                .shadow(color: .accent, radius: Constant.shadowRadius)
         }
         .frame(height: Constant.cardHeight)
         .cornerRadius(Constant.cornerRadius)

@@ -32,13 +32,23 @@ struct HeroesListView<VM: HeroesListViewModelProtocol>: View {
     
     // MARK: - Body
     var body: some View {
-        ScrollView(showsIndicators: true) {
-            LazyVGrid(columns: columns, alignment: .leading, spacing: 8) {
-                ForEach(viewModel.heroes) { hero in
-                    CharacterCardView(hero: hero)
+        Group {
+            switch viewModel.state {
+            case .idle:
+                EmptyView()
+            case .loading:
+                MarvelLogoView()
+            case .loaded(let characters):
+                ScrollView(showsIndicators: true) {
+                    LazyVGrid(columns: columns, alignment: .leading, spacing: 8) {
+                        ForEach(characters) { hero in
+                            CharacterCardView(hero: hero)
+                        }
+                    }
+                    .padding(.horizontal)
                 }
+                .animation(.linear, value: viewModel.state)
             }
-            .padding(.horizontal)
         }
         .onViewDidLoad {
             Task { await viewModel.loadFirstPage() }
@@ -53,7 +63,7 @@ struct HeroesListView<VM: HeroesListViewModelProtocol>: View {
 //                viewModel.didSelectHero(nil)
 //            }
 //        })
-        .searchable(text: $viewModel.query, placement: .navigationBarDrawer(displayMode: .always))
+        .searchable(text: $viewModel.searchText, placement: .navigationBarDrawer(displayMode: .always))
         .marvelNavigationBar()
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
@@ -71,14 +81,14 @@ struct HeroesListView<VM: HeroesListViewModelProtocol>: View {
 // MARK: - Private
 private extension HeroesListView {
     func checkIfShouldLoadNextPage(currentIndex: Int) async {
-        guard !viewModel.isLoading, !hasTriggeredPagination else { return }
-        
-        let thresholdIndex = Int(Double(viewModel.heroes.count) * 0.9)
-        if currentIndex >= thresholdIndex {
-            hasTriggeredPagination = true
-            await viewModel.loadNextPage()
-            hasTriggeredPagination = false
-        }
+//        guard !viewModel.isLoading, !hasTriggeredPagination else { return }
+//        
+//        let thresholdIndex = Int(Double(viewModel.heroes.count) * 0.9)
+//        if currentIndex >= thresholdIndex {
+//            hasTriggeredPagination = true
+//            await viewModel.loadNextPage()
+//            hasTriggeredPagination = false
+//        }
     }
     
     func toggleGridLayout() {
