@@ -16,8 +16,7 @@ struct HeroesListView<VM: HeroesListViewModelProtocol>: View {
     
     @StateObject private var viewModel: VM
     @EnvironmentObject private var coordinator: AppCoordinator
-    @State private var hasTriggeredPagination = false
-    
+//    @State private var hasTriggeredPagination = false
     @State private var gridLayout: GridLayout = .twoColumns
     @State private var columns: [GridItem] = [GridItem(.flexible()), GridItem(.flexible())]
     
@@ -37,17 +36,34 @@ struct HeroesListView<VM: HeroesListViewModelProtocol>: View {
             case .idle:
                 EmptyView()
             case .loading:
-                MarvelLogoView()
+                LoadingView()
             case .loaded(let characters):
                 ScrollView(showsIndicators: true) {
-                    LazyVGrid(columns: columns, alignment: .leading, spacing: 8) {
+                    LazyVGrid(columns: columns, alignment: .leading) {
+                        
                         ForEach(characters) { hero in
                             CharacterCardView(hero: hero)
                         }
                     }
                     .padding(.horizontal)
+                    .animation(.linear, value: viewModel.state)
                 }
-                .animation(.linear, value: viewModel.state)
+                .searchable(
+                    text: $viewModel.searchText,
+                    placement: .navigationBarDrawer(displayMode: .always),
+                    prompt: "Search hero by name"
+                )
+            }
+        }
+        .marvelNavigationBar()
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    toggleGridLayout()
+                } label: {
+                    Image(systemName: leftNavigationBarImageName)
+                }
+
             }
         }
         .onViewDidLoad {
@@ -63,18 +79,6 @@ struct HeroesListView<VM: HeroesListViewModelProtocol>: View {
 //                viewModel.didSelectHero(nil)
 //            }
 //        })
-        .searchable(text: $viewModel.searchText, placement: .navigationBarDrawer(displayMode: .always))
-        .marvelNavigationBar()
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button {
-                    toggleGridLayout()
-                } label: {
-                    Image(systemName: leftNavigationBarImageName)
-                }
-
-            }
-        }
     }
 }
 
@@ -112,4 +116,10 @@ private extension HeroesListView {
             }
     }
     .environmentObject(coordinator)
+}
+
+struct LoadingView: View {
+    var body: some View {
+        Text("Loading")
+    }
 }
