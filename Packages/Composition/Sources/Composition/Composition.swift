@@ -2,15 +2,15 @@ import Domain
 import Data
 
 public enum ModuleFactory {
-    public static func makeGetHeroesUseCase() -> GetHeroesUseCaseProtocol {
+    public static func makeGetHeroesUseCase() -> GetCharactersUseCaseProtocol {
         let networkManager = NetworkManager()
         let repository = MarvelRepository(baseURL: "https://gateway.marvel.com:443/v1/public", networkManager: networkManager)
-        return GetHeroesUseCase(repository: repository)
+        return GetCharactersUseCase(repository: repository)
     }
     
-    public static func makeGetHeroDetailsUseCase() -> GetHeroDetailsUseCaseProtocol {
+    public static func makeGetHeroDetailsUseCase() -> GetCharacterDetailsUseCaseProtocol {
         let networkManager = NetworkManager()
         let repository = MarvelRepository(baseURL: "https://gateway.marvel.com:443/v1/public", networkManager: networkManager)
-        return GetHeroDetailsUseCase(repository: repository)
+        return GetCharacterDetailsUseCase(repository: repository)
     }
 }

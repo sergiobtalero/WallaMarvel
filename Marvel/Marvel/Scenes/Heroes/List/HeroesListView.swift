@@ -41,8 +41,11 @@ struct HeroesListView<VM: HeroesListViewModelProtocol>: View {
                 ScrollView(showsIndicators: true) {
                     LazyVGrid(columns: columns, alignment: .leading) {
                         
-                        ForEach(characters) { hero in
-                            CharacterCardView(hero: hero)
+                        ForEach(characters) { character in
+                            CharacterCardView(hero: character)
+                                .onAppear {
+                                    viewModel.onCharacterAppear(character)
+                                }
                         }
                     }
                     .padding(.horizontal)

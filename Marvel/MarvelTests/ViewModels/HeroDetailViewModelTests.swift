@@ -13,8 +13,8 @@ struct HeroDetailViewModelTests {
 
     @Test func testHeroDetailViewModel() async {
         let thumbnail = Thumbnail(path: "https://example", extension: "jpg")
-        let originalHero = Hero(id: 1, name: "Hulk", description: "", thumbnail: thumbnail)
-        var updatedHero = Hero(
+        let originalHero = Character(id: 1, name: "Hulk", description: "", thumbnail: thumbnail)
+        var updatedHero = Character(
             id: 1,
             name: "Hulk",
             description: "The green man",

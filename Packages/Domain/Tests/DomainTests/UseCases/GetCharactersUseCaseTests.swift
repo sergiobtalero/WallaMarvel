@@ -2,7 +2,7 @@ import Testing
 import Foundation
 @testable import Domain
 
-struct GetHeroesUseCaseTests {
+struct GetCharactersUseCaseTests {
     let repositoryMock: MarvelRepositoryMock
     
     init() {
@@ -10,13 +10,13 @@ struct GetHeroesUseCaseTests {
     }
     
     @Test func executeWithSuccess() async throws {
-        let sut = GetHeroesUseCase(repository: repositoryMock)
+        let sut = GetCharactersUseCase(repository: repositoryMock)
         let heroes = try await sut.execute(page: 1)
         #expect(heroes.count == 100)
     }
     
     @Test func executeWithError() async throws {
-        let sut = GetHeroesUseCase(repository: repositoryMock)
+        let sut = GetCharactersUseCase(repository: repositoryMock)
         repositoryMock.error = NSError(domain: "", code: 500, userInfo: nil)
         do {
             let _ = try await sut.execute(page: 1)

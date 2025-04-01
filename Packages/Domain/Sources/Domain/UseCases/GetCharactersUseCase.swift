@@ -7,11 +7,11 @@
 
 import Foundation
 
-public protocol GetHeroesUseCaseProtocol {
-    func execute(page: Int) async throws -> DataContainer<Hero>
+public protocol GetCharactersUseCaseProtocol {
+    func execute(page: Int) async throws -> DataContainer<Character>
 }
 
-public final class GetHeroesUseCase {
+public final class GetCharactersUseCase {
     private let repository: MarvelRepositoryProtocol
     
     public init(repository: MarvelRepositoryProtocol) {
@@ -19,8 +19,8 @@ public final class GetHeroesUseCase {
     }
 }
 
-extension GetHeroesUseCase: GetHeroesUseCaseProtocol {
-    public func execute(page: Int) async throws -> DataContainer<Hero> {
+extension GetCharactersUseCase: GetCharactersUseCaseProtocol {
+    public func execute(page: Int) async throws -> DataContainer<Character> {
         try await repository.getHeroes(page: page)
     }
 }

@@ -11,16 +11,16 @@ import Foundation
 
 protocol HeroDetailViewModelProtocol: ObservableObject {
     func loadDetails() async
-    var hero: Hero { get set }
+    var hero: Character { get set }
 }
 
 final class HeroDetailViewModel {
-    private let getHeroDetailsUseCase: GetHeroDetailsUseCaseProtocol
+    private let getHeroDetailsUseCase: GetCharacterDetailsUseCaseProtocol
     
-    @Published var hero: Hero
+    @Published var hero: Character
     
-    init(hero: Hero,
-         getHeroDetailsUseCase: GetHeroDetailsUseCaseProtocol = ModuleFactory.makeGetHeroDetailsUseCase()) {
+    init(hero: Character,
+         getHeroDetailsUseCase: GetCharacterDetailsUseCaseProtocol = ModuleFactory.makeGetHeroDetailsUseCase()) {
         self.hero = hero
         self.getHeroDetailsUseCase = getHeroDetailsUseCase
     }

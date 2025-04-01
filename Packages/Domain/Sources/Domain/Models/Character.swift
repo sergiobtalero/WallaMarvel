@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct Hero: Identifiable, Equatable, Sendable, Hashable {
+public struct Character: Identifiable, Equatable, Sendable, Hashable {
     public let id: Int
     public let name: String
     public let description: String

@@ -12,30 +12,31 @@ import Foundation
 
 protocol HeroesListViewModelProtocol: ObservableObject {
     var navigationTitle: String { get }
-    var heroSelected: Hero? { get set }
+    var heroSelected: Character? { get set }
     var searchText: String { get set }
     var state: HeroesListViewState { get }
     
     func loadFirstPage() async
     func loadNextPage() async
-    func didSelectHero(_ hero: Hero?)
+    func didSelectHero(_ hero: Character?)
+    func onCharacterAppear(_ character: Character)
 }
 
 enum HeroesListViewState: Equatable {
     case idle
     case loading
-    case loaded(characters: [Hero])
+    case loaded(characters: [Character])
 }
 
 final class HeroesListViewModel {
     @Published private(set) var state: HeroesListViewState = .idle
-    @Published var heroSelected: Hero?
+    @Published var heroSelected: Character?
     @Published var searchText: String = ""
     
-    private let getHeroesUseCase: GetHeroesUseCaseProtocol
+    private let getHeroesUseCase: GetCharactersUseCaseProtocol
     private let nameFilter: HeroFilterStrategy
     
-    private let heroesSubject = CurrentValueSubject<[Hero], Never>([])
+    private let heroesSubject = CurrentValueSubject<[Character], Never>([])
     private var subscriptions = Set<AnyCancellable>()
     
     private var currentPage = 1
@@ -55,7 +56,7 @@ final class HeroesListViewModel {
     }
     
     // MARK: - Initializer
-    init(getHeroesUseCase: GetHeroesUseCaseProtocol = ModuleFactory.makeGetHeroesUseCase(),
+    init(getHeroesUseCase: GetCharactersUseCaseProtocol = ModuleFactory.makeGetHeroesUseCase(),
          nameFilter: HeroFilterStrategy = NameFilter()) {
         self.getHeroesUseCase = getHeroesUseCase
         self.nameFilter = nameFilter
@@ -85,8 +86,12 @@ extension HeroesListViewModel: HeroesListViewModelProtocol {
         }
     }
     
-    func didSelectHero(_ hero: Hero?) {
+    func didSelectHero(_ hero: Character?) {
         heroSelected = hero
+    }
+    
+    func onCharacterAppear(_ character: Character) {
+        
     }
 }
 
@@ -114,7 +119,7 @@ private extension HeroesListViewModel {
 
 // MARK: - Private
 private extension HeroesListViewModel {
-    func updateHeroes(_ heroes: [Hero]) {
+    func updateHeroes(_ heroes: [Character]) {
         var loadedHeroes = heroesSubject.value
         loadedHeroes.append(contentsOf: heroes)
         

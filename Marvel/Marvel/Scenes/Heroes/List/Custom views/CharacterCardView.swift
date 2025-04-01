@@ -11,7 +11,7 @@ import SwiftUI
 import Kingfisher
 
 struct CharacterCardView: View {
-    let hero: Hero
+    let hero: Character
     
     private enum Constant {
         static let cardHeight: CGFloat = 220

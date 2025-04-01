@@ -9,14 +9,14 @@ import Domain
 import SwiftUI
 
 enum Route: Hashable {
-    case detail(hero: Hero)
+    case detail(hero: Character)
 }
 
 @MainActor
 final class AppCoordinator: ObservableObject {
     @Published var routes: [Route] = []
     
-    func goToHeroDetail(_ hero: Hero) {
+    func goToHeroDetail(_ hero: Character) {
         routes.append(.detail(hero: hero))
     }
 }

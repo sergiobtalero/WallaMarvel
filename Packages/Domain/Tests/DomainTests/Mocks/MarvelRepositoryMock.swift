@@ -11,16 +11,16 @@ import Foundation
 final class MarvelRepositoryMock: MarvelRepositoryProtocol {
     var error: Error?
     
-    func getHeroes(page: Int) async throws -> DataContainer<Hero> {
+    func getHeroes(page: Int) async throws -> DataContainer<Character> {
         if let error = error {
             throw error
         }
-        let characters = [Hero(id: 0, name: "test", description: "desciption", thumbnail: Thumbnail(path: "image", extension: "jpg"))]
-        return DataContainer<Hero>(count: 100, limit: 100, offset: 0, total: 100, results: characters)
+        let characters = [Character(id: 0, name: "test", description: "desciption", thumbnail: Thumbnail(path: "image", extension: "jpg"))]
+        return DataContainer<Character>(count: 100, limit: 100, offset: 0, total: 100, results: characters)
     }
     
-    func getDetailsOfHero(id: Int) async throws -> Hero {
-        return Hero(id: 0, name: "test", description: "desciption", thumbnail: Thumbnail(path: "image", extension: "jpg"))
+    func getDetailsOfHero(id: Int) async throws -> Character {
+        return Character(id: 0, name: "test", description: "desciption", thumbnail: Thumbnail(path: "image", extension: "jpg"))
     }
     
     func getComicsOfHero(id: Int) async throws -> [Comic] {

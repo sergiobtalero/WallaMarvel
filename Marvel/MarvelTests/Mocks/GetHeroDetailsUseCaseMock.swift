@@ -8,9 +8,9 @@
 import Domain
 
 final class GetHeroDetailsUseCaseMock: GetHeroDetailsUseCaseProtocol {
-    var heroToReturn: Hero?
+    var heroToReturn: Character?
     
-    func execute(id: Int) async throws -> Hero {
+    func execute(id: Int) async throws -> Character {
         return heroToReturn!
     }
 }

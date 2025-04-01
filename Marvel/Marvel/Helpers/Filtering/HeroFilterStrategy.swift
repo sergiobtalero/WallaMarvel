@@ -9,11 +9,11 @@ import Domain
 import Foundation
 
 protocol HeroFilterStrategy {
-    func filter(heroes: [Hero], withSearchText searchText: String) -> [Hero]
+    func filter(heroes: [Character], withSearchText searchText: String) -> [Character]
 }
 
 final class NameFilter: HeroFilterStrategy {
-    func filter(heroes: [Hero], withSearchText searchText: String) -> [Hero] {
+    func filter(heroes: [Character], withSearchText searchText: String) -> [Character] {
         heroes.filter { $0.name.contains(searchText.trimmingCharacters(in: .whitespaces)) }
     }
 }

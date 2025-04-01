@@ -8,11 +8,6 @@
 import Domain
 import Foundation
 
-protocol DTOConvertible: Decodable {
-    associatedtype DomainModel: Sendable
-    func toDomainModel() -> DomainModel
-}
-
 struct ContainerDTO<T: DTOConvertible>: Decodable {
     let offset: Int
     let limit: Int

@@ -1,5 +1,5 @@
 //
-//  GetHeroDetailsUseCase.swift
+//  GetCharacterDetailsUseCase.swift
 //  Domain
 //
 //  Created by Sergio David Bravo Talero on 30/3/25.
@@ -7,11 +7,11 @@
 
 import Foundation
 
-public protocol GetHeroDetailsUseCaseProtocol {
-    func execute(id: Int) async throws -> Hero
+public protocol GetCharacterDetailsUseCaseProtocol {
+    func execute(id: Int) async throws -> Character
 }
 
-public final class GetHeroDetailsUseCase {
+public final class GetCharacterDetailsUseCase {
     private let repository: MarvelRepositoryProtocol
     
     public init(repository: MarvelRepositoryProtocol) {
@@ -19,8 +19,8 @@ public final class GetHeroDetailsUseCase {
     }
 }
 
-extension GetHeroDetailsUseCase: GetHeroDetailsUseCaseProtocol {
-    public func execute(id: Int) async throws -> Hero {
+extension GetCharacterDetailsUseCase: GetCharacterDetailsUseCaseProtocol {
+    public func execute(id: Int) async throws -> Character {
         var details = try await repository.getDetailsOfHero(id: id)
         let comics = try? await repository.getComicsOfHero(id: id)
         let series = try? await repository.getSeriesOfHero(id: id)

@@ -44,16 +44,16 @@ private extension MarvelRepository {
 
 // MARK: - MarvelRepositoryProtocol
 extension MarvelRepository: MarvelRepositoryProtocol {
-    public func getHeroes(page: Int) async throws -> DataContainer<Hero> {
+    public func getHeroes(page: Int) async throws -> DataContainer<Character> {
         let responseLimit = 20
         let url = try buildURL(for: .heroes(page: page, limit: responseLimit))
-        let entities: ContainerDTO<HeroDTO> = try await networkManager.fetch(from: url)
+        let entities: ContainerDTO<CharacterDTO> = try await networkManager.fetch(from: url)
         return entities.toDomain()
     }
     
-    public func getDetailsOfHero(id: Int) async throws -> Hero {
+    public func getDetailsOfHero(id: Int) async throws -> Character {
         let url = try buildURL(for: .heroDetail(id: id))
-        let entities: ContainerDTO<HeroDTO> = try await networkManager.fetch(from: url)
+        let entities: ContainerDTO<CharacterDTO> = try await networkManager.fetch(from: url)
         if let details = entities.results.first?.toDomainModel() {
             return details
         } else {
