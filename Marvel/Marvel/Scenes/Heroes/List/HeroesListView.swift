@@ -9,32 +9,33 @@ import Domain
 import SwiftUI
 
 struct HeroesListView<VM: HeroesListViewModelProtocol>: View {
+    enum GridLayout: Int {
+        case oneColumn
+        case twoColumns
+    }
+    
     @StateObject private var viewModel: VM
     @EnvironmentObject private var coordinator: AppCoordinator
     @State private var hasTriggeredPagination = false
     
-    private let columns: [GridItem] = [
-        GridItem(.flexible(), spacing: 8),
-        GridItem(.flexible(), spacing: 8)
-    ]
+    @State private var gridLayout: GridLayout = .twoColumns
+    @State private var columns: [GridItem] = [GridItem(.flexible()), GridItem(.flexible())]
     
+    private var leftNavigationBarImageName: String {
+        gridLayout != .twoColumns ? "align.vertical.top.fill" : "align.horizontal.left.fill"
+    }
+    
+    // MARK: - Initializer
     init(viewModel: VM) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
     
+    // MARK: - Body
     var body: some View {
-        ScrollView {
-            LazyVGrid(columns: columns, spacing: 8) {
-                ForEach(viewModel.heroes.indices, id: \.self) { index in
-                    HeroGridItemView(hero: viewModel.heroes[index])
-                        .onAppear {
-                            Task {
-                                await checkIfShouldLoadNextPage(currentIndex: index)
-                            }
-                        }
-                        .onTapGesture {
-                            viewModel.didSelectHero(viewModel.heroes[index])
-                        }
+        ScrollView(showsIndicators: true) {
+            LazyVGrid(columns: columns, alignment: .leading, spacing: 8) {
+                ForEach(viewModel.heroes) { hero in
+                    CharacterCardView(hero: hero)
                 }
             }
             .padding(.horizontal)
@@ -42,18 +43,28 @@ struct HeroesListView<VM: HeroesListViewModelProtocol>: View {
         .onViewDidLoad {
             Task { await viewModel.loadFirstPage() }
         }
-        .onChange(of: viewModel.heroSelected, { _, hero in
-            if let hero {
-                coordinator.goToHeroDetail(hero)
-            }
-        })
-        .onChange(of: coordinator.routes, { _, newValue in
-            if newValue.isEmpty {
-                viewModel.didSelectHero(nil)
-            }
-        })
-        .navigationTitle(viewModel.navigationTitle)
+//        .onChange(of: viewModel.heroSelected, { _, hero in
+//            if let hero {
+//                coordinator.goToHeroDetail(hero)
+//            }
+//        })
+//        .onChange(of: coordinator.routes, { _, newValue in
+//            if newValue.isEmpty {
+//                viewModel.didSelectHero(nil)
+//            }
+//        })
         .searchable(text: $viewModel.query, placement: .navigationBarDrawer(displayMode: .always))
+        .marvelNavigationBar()
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    toggleGridLayout()
+                } label: {
+                    Image(systemName: leftNavigationBarImageName)
+                }
+
+            }
+        }
     }
 }
 
@@ -67,6 +78,14 @@ private extension HeroesListView {
             hasTriggeredPagination = true
             await viewModel.loadNextPage()
             hasTriggeredPagination = false
+        }
+    }
+    
+    func toggleGridLayout() {
+        gridLayout = gridLayout == .oneColumn ? .twoColumns : .oneColumn
+        
+        withAnimation(.bouncy) {
+            columns = Array(repeating: GridItem(.flexible()), count: gridLayout.rawValue + 1)
         }
     }
 }
