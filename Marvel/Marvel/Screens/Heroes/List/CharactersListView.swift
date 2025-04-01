@@ -33,7 +33,7 @@ struct CharactersListView<VM: CharactersListViewModelProtocol>: View {
         Group {
             switch viewModel.state {
             case .idle:
-                EmptyView()
+                Color.clear
             case .empty:
                 ContentUnavailableView("No characters to show", systemImage: "eye.slash")
             case .loading:

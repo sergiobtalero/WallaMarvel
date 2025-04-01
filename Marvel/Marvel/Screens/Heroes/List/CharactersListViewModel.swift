@@ -13,13 +13,13 @@ import Foundation
 protocol CharactersListViewModelProtocol: ObservableObject {
     var navigationTitle: String { get }
     var searchText: String { get set }
-    var state: CharactersListViewState { get }
+    var state: CharactersListScreenState { get }
     
     func loadFirstPage() async
     func onCharacterAppear(_ character: Character)
 }
 
-enum CharactersListViewState: Equatable {
+enum CharactersListScreenState: Equatable {
     case idle
     case empty
     case loading
@@ -27,7 +27,7 @@ enum CharactersListViewState: Equatable {
 }
 
 final class CharactersListViewModel {
-    @Published private(set) var state: CharactersListViewState = .idle
+    @Published private(set) var state: CharactersListScreenState = .idle
     @Published var searchText: String = ""
     
     private let getHeroesUseCase: GetCharactersUseCaseProtocol

@@ -17,58 +17,26 @@ struct CharacterDetailView<VM: CharacterDetailViewModelProtocol>: View {
     }
     
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading){
-                if let imageURL = viewModel.character.thumbnailURL {
-                    HStack {
-                        KFImage(imageURL)
-                            .resizable()
-                            .frame(width: 150, height: 150)
-                        Spacer()
-                    }
-                }
-                if !viewModel.character.description.isEmpty {
-                    VStack(alignment: .leading) {
-                        Text("Description")
-                            .font(.title2)
-                            .fontWeight(.semibold)
-                        Text(viewModel.character.description)
-                            .lineLimit(nil)
-                            .fixedSize(horizontal: false, vertical: true)
-                            .layoutPriority(1)
-                    }
-                    .padding(.bottom)
-                }
-                
-                if !viewModel.character.comics.isEmpty {
-                    VStack(alignment: .leading) {
-                        Text("Comics")
-                            .font(.title2)
-                            .fontWeight(.semibold)
-                        HorizontalGridView(elements: viewModel.character.comics)
-                            .frame(height: 200)
-                    }
-                    .padding(.bottom)
-                }
-                
-                if !viewModel.character.series.isEmpty {
-                    VStack(alignment: .leading) {
-                        Text("Series")
-                            .font(.title2)
-                            .fontWeight(.semibold)
-                        HorizontalGridView(elements: viewModel.character.series)
-                            .frame(height: 200)
-                    }
-                    .padding(.bottom)
-                }
+        Group {
+            switch viewModel.state {
+            case .idle:
+                Color.clear
+            case .loading:
+                LoadingView()
+            case .error:
+                ContentUnavailableView("Something failed", systemImage: "exclamationmark.triangle")
+            case .loaded(let character):
+                CharacterDetailViewWithComicsAndSeries(character: character)
             }
         }
         .padding(.horizontal)
-        .navigationTitle(viewModel.character.name)
+        .marvelNavigationBar()
         .onViewDidLoad {
-            Task {
-                await viewModel.loadDetails()
-            }
+            Task { await viewModel.loadDetails() }
         }
     }
+}
+
+#Preview {
+    CharacterDetailView(viewModel: CharacterDetailViewModel(characterId: 10))
 }

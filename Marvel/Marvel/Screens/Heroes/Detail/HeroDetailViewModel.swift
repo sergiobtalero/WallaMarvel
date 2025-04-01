@@ -10,18 +10,27 @@ import Domain
 import Foundation
 
 protocol CharacterDetailViewModelProtocol: ObservableObject {
+    var state: CharacterDetailScreenState { get set }
+    
     func loadDetails() async
-    var character: Character { get set }
+}
+
+enum CharacterDetailScreenState {
+    case idle
+    case loading
+    case error
+    case loaded(character: Character)
 }
 
 final class CharacterDetailViewModel {
     private let getHeroDetailsUseCase: GetCharacterDetailsUseCaseProtocol
     
-    @Published var character: Character
+    private let characterId: Int
+    @Published var state: CharacterDetailScreenState = .idle
     
-    init(character: Character,
+    init(characterId: Int,
          getHeroDetailsUseCase: GetCharacterDetailsUseCaseProtocol = ModuleFactory.makeGetHeroDetailsUseCase()) {
-        self.character = character
+        self.characterId = characterId
         self.getHeroDetailsUseCase = getHeroDetailsUseCase
     }
 }
@@ -29,9 +38,12 @@ final class CharacterDetailViewModel {
 // MARK: - CharacterDetailViewModelProtocol
 extension CharacterDetailViewModel: CharacterDetailViewModelProtocol {
     @MainActor func loadDetails() async {
-        if let character = try? await getHeroDetailsUseCase.execute(id: character.id) {
-            objectWillChange.send()
-            self.character = character
+        state = .loading
+        do {
+            let character = try await getHeroDetailsUseCase.execute(id: characterId)
+            state = .loaded(character: character)
+        } catch {
+            state = .error
         }
     }
 }

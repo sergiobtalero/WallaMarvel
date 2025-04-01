@@ -46,7 +46,7 @@ final class AppCoordinator: AppCoordinatorProtocol {
         case .charactersList:
             CharactersListView()
         case .characterDetail(let character):
-            CharacterDetailView(viewModel: CharacterDetailViewModel(character: character))
+            CharacterDetailView(viewModel: CharacterDetailViewModel(characterId: character.id))
         }
     }
 }
