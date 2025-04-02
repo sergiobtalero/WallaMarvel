@@ -8,9 +8,11 @@
 import Domain
 
 final class GetHeroDetailsUseCaseMock: GetCharacterDetailsUseCaseProtocol {
-    var heroToReturn: Character?
-    
     func execute(id: Int) async throws -> Character {
-        return heroToReturn!
+        if let character = marvelCharacters.first(where: { $0.id == id }) {
+            return character
+        } else {
+            throw TestError(description: "Default error")
+        }
     }
 }

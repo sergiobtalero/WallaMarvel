@@ -75,15 +75,4 @@ struct HeroesListViewModelTests {
             throw TestError(description: "Invalid state.")
         }
     }
-    
-//    @Test
-//    func didSelectHero_setsSelectedHero() {
-//        let getHeroesUseCaseMock = GetHeroesUseCaseMock()
-//        let viewModel = HeroesListViewModel(getHeroesUseCase: getHeroesUseCaseMock)
-//        let hero = Hero(id: 1, name: "Spider Man", description: "Spider Man", thumbnail: Thumbnail(path: "path", extension: "extension"))
-//        viewModel.didSelectHero(hero)
-//        
-//        #expect(viewModel.heroSelected == hero)
-//    }
-//
 }
