@@ -39,6 +39,7 @@ struct CharacterCardView: View {
                 .padding([.horizontal, .bottom], Constant.defaultPadding)
                 .shadow(color: .accent, radius: Constant.shadowRadius)
         }
+        .accessibilityIdentifier("heroGridItem")
         .frame(height: Constant.cardHeight)
         .cornerRadius(Constant.cornerRadius)
         .shadow(radius: Constant.shadowRadius)

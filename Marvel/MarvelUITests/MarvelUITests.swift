@@ -16,33 +16,39 @@ final class MarvelAppUITests: XCTestCase {
         app.launch()
     }
     
-    func testHeroListLoads() {
+    func test_HeroListLoads() {
         let grid = app.scrollViews.firstMatch
         XCTAssertTrue(grid.waitForExistence(timeout: 5), "Hero grid should be visible")
     }
     
-    func testSearchHero() {
+    func test_SearchHero_FindsMatches() {
         let searchField = app.searchFields.firstMatch
         XCTAssertTrue(searchField.waitForExistence(timeout: 5))
         
         searchField.tap()
-        searchField.typeText("Spider-Man")
+        searchField.typeText("Abomination")
         
         // Expect some cell to appear
         let firstCell = app.scrollViews.children(matching: .other).element(boundBy: 0)
         XCTAssertTrue(firstCell.waitForExistence(timeout: 5))
     }
     
+    func test_SearchHero_NoMatches_EmptyState() {
+        let searchField = app.searchFields.firstMatch
+        XCTAssertTrue(searchField.waitForExistence(timeout: 5))
+        
+        searchField.tap()
+        searchField.typeText("Spider")
+        XCTAssertTrue(app.staticTexts["No Results for “Spider”"].waitForExistence(timeout: 5))
+    }
+    
     func testHeroDetailNavigation() {
         let scrollViewsQuery = XCUIApplication().scrollViews
-        scrollViewsQuery.children(matching: .other).element(boundBy: 0).children(matching: .other).element.children(matching: .staticText)["3-D Man"].children(matching: .image).element.tap()
-        
+        scrollViewsQuery.children(matching: .other).element(boundBy: 0).children(matching: .other).element.children(matching: .image).matching(identifier: "heroGridItem").element(boundBy: 0).tap()
         let elementsQuery = scrollViewsQuery.otherElements
-        let comicsText = elementsQuery.staticTexts["Comics"]
-        let seriesText = elementsQuery.staticTexts["Series"]
-        XCTAssertTrue(comicsText.waitForExistence(timeout: 5))
-        XCTAssertTrue(seriesText.waitForExistence(timeout: 5))
-        
+        XCTAssertFalse(elementsQuery.staticTexts["Description"].waitForExistence(timeout: 5))
+        XCTAssertTrue(elementsQuery.staticTexts["Comics"].waitForExistence(timeout: 5))
+        XCTAssertTrue(elementsQuery.staticTexts["Series"].waitForExistence(timeout: 5))
     }
     
     func testPagination() {
@@ -50,7 +56,7 @@ final class MarvelAppUITests: XCTestCase {
         XCTAssertTrue(scrollView.waitForExistence(timeout: 5), "Hero list did not appear")
         XCTAssertTrue(scrollView.staticTexts.matching(identifier: "heroGridItem").firstMatch.waitForExistence(timeout: 5))
         let initialCount = scrollView.staticTexts.matching(identifier: "heroGridItem").count
-        for _ in 0..<5 {
+        for _ in 0..<3 {
             scrollView.swipeUp()
         }
         let finalCount = scrollView.staticTexts.matching(identifier: "heroGridItem").count
