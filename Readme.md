@@ -57,13 +57,11 @@ The app retrieves a list of superheroes from the Marvel API, displays them, allo
    - Maintained consistent naming, organization, and encapsulation throughout.
 
 10. **Security Considerations**
-    - API keys are hardcoded for the purposes of this technical test:
-      - Public Key: `d575c26d5c746f623518e753921ac847`
-      - Private Key: `188f9a5aa76846d907c41cbea6506e4cc455293f`
-    - In a production setting, I would:
-      - Store keys in `.xcconfig` files or environment variables
-      - Exclude secrets from version control via `.gitignore`
-      - Leverage the iOS Keychain and optionally encrypt keys bundled at runtime
+    - API keys are hardcoded in this technical test for simplicity.
+    - In a real-world scenario, I would avoid bundling private API keys in the binary altogether. My approach includes:
+      - **Development**: Keys are stored in `.xcconfig` files that are excluded from version control (`.gitignore`) and shared securely with developers.
+      - **CI/CD**: Secrets are injected at build time using environment variables (e.g., via GitHub Actions or other CI tools) and passed to the compiler or build scripts.
+      - **Production**: For sensitive operations or private keys (e.g., Marvel's private API key), I would strongly prefer routing API requests through a secure backend proxy. This removes the need for client-side storage of secrets and centralizes control over authentication, rate limiting, and analytics.
 
 ---
 
